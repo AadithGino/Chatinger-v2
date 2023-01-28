@@ -1,0 +1,77 @@
+.main-div{
+    height: 100vh;
+    background-color: white;
+}
+.topbar{
+    padding-right: 20px;
+    justify-content: space-between;
+    height: 9vh;
+    padding-top: 8px;
+    display: flex;
+    padding-left: 1rem;
+    position: sticky;
+}
+.top-bar-name{
+    color: black;
+    margin: 0;
+    margin-right: 20px;
+}
+.messenger{
+    display: flex;
+    height: 100vh;
+}
+
+.chatMenu{
+    margin: 0;
+    flex: 3.5;
+    overflow: scroll;
+    overflow-x: hidden;
+    /* background-color: black; */
+    background-color: rgb(255, 255, 255);
+}
+
+.chatMenu::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+.chatMenu::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+.chatMenu::-webkit-scrollbar-thumb
+{
+	background-color: #000000;
+}
+
+.chatBox{
+    margin: 0;
+    flex: 9.5;
+    
+    /* background-color: black; */
+    border-left: white 1px solid;
+}
+/* .chatOnline{
+    margin: 0;
+    flex: 3;
+    border-left: 1px solid black;
+} */
+
+@media only screen and (max-width: 690px) {
+    .chatBox{
+        margin: 0;
+        /* flex: 13; */
+        
+        /* background-color: black; */
+        border-left: white 1px solid;
+    }
+    .chatMenu{
+        margin: 0;
+        flex: 13;
+        display: none;
+        
+    }
+  }

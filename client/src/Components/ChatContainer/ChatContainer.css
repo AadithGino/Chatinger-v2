@@ -1,0 +1,128 @@
+body{
+  
+}
+.ChatBox-container{
+  height: 100vh;
+  
+  background-color: grey;
+  width: 100%;
+}
+.chat-body{
+    overflow: scroll;
+    height: 82%;
+    background-color: rgb(239, 234, 226);
+    overflow-x: hidden;
+    margin: 0;
+    padding: 5px;
+    position: relative;
+}
+.chat-body::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+.chat-body::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+.chat-body::-webkit-scrollbar-thumb
+{
+	background-color: #000000;
+}
+
+.user-name{
+  margin: 0;
+  
+
+}
+
+hr{
+  margin: 0;
+}
+
+.profile-image{
+  border-radius: 50px;
+  margin: 0;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.chat-header{
+  justify-content: space-between;
+  display: flex;
+  padding-left: 2rem;
+  border: none;
+  padding-top: 1rem;
+  height: 9vh;
+  background-color: #ffff;
+  color: white;
+  margin: 0;
+  border-right: 1px solid black;
+  padding-right: 20px;
+}
+
+.chatBoxBottom {
+    background-color: rgb(240, 242, 245);
+    padding: 1px;
+    margin: 0;
+    display: flex;
+    padding-left: 30px;
+    height: 9%;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .chatMessageInput {
+    width: 80%;
+    height: 45px;
+    padding: 10px;
+    border-radius: 50px;
+    background-color: #ffff;
+    margin: 0;
+  }
+
+  .chatMessageInput:focus{
+    border: white;
+  }
+  
+  .chatSubmitButton {
+    width: 60px;
+    height: 60px;
+    border: none;
+    border-radius: 100%;
+    cursor: pointer;
+    background-color: teal;
+    color: white;
+  }
+  .image-upload{
+    display: none;
+  }
+
+  .group-members{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .groupchat-info{
+    margin-left: 40%;
+    margin-right: 20px;
+    
+  }
+
+  .image-preview{
+    position: absolute;
+    height: 250;
+    margin-left: 15%;
+    width: 250px;
+    padding: 10px;
+    background-color: rgb(208, 208, 208);
+    border-radius: 30px;
+  }
+
+  .preview-image{
+    height: 250;
+    width: 250px;
+  }

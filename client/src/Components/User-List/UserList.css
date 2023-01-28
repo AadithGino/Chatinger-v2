@@ -1,0 +1,50 @@
+.home-page{
+    /* background-color: black; */
+    background-color: rgb(255, 255, 255);
+   color: black;
+}
+
+.user-list{
+    display: flex;
+    align-items: center;
+    padding-top: 15px;
+    padding-left: 10px;
+    color: black;
+    /* border-bottom: 1px solid white; */
+}
+.user-list-main:hover{
+    background-color: grey;
+}
+
+.user-img{
+    height: 40px;
+    width: 40px;
+   border-radius: 50%;
+    margin-right: 20px;
+}
+
+.user-name{
+    font-weight: 500;
+    color: black;
+}
+
+.user-list-main{
+    /* border-bottom: 
+0.5px solid grey; */
+}
+.latest-message-time-userlist{
+    margin: 0;
+    margin-left: 50%;
+    font-size: 12px;
+}
+
+.separating-line{
+    margin-left: 50px;
+    color: black;
+}
+
+.latest-message-userlist{
+    margin: 0;
+    /* margin-right: 37%; */
+    font-size: 14px;
+}

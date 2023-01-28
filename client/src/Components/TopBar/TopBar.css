@@ -1,0 +1,26 @@
+.Topbar{
+    background-color: rgb(65, 65, 65);
+    height: 70px;
+    width: 40%;
+    padding-right: 30px;
+    
+}
+.group-img{
+    height: 20px;
+    width: 30px;
+    margin-left: 40%;
+    margin-top: 0;
+    
+}
+.profile-img{
+    border-radius: 50%;
+    height: 40px;
+    width: 40px;
+    margin-top: 10px;
+    margin-left: 10px;
+    border: 2px solid black;
+}
+
+.status-icon{
+    margin-top: 20px;
+}

@@ -1,0 +1,22 @@
+.call-history-main-div{
+    width: 100%;
+    display: flex;
+}
+.call-history{
+    border-top: 1px solid black;
+    flex: 3.5;
+    width: 50%;
+    height: 100vh;
+}
+
+.call-history-details{
+    flex: 9.5;
+    width: 50%;
+    height: 100vh;
+}
+
+.call-history-menu-wrapped{
+    overflow: scroll;
+    height: 91vh;
+    overflow-x: hidden;
+}

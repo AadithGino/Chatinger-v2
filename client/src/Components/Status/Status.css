@@ -1,0 +1,59 @@
+.status-main-div{
+    width: 100%;
+    display: flex;
+}
+
+.status-list-css{
+    flex: 3.5;
+    width: 50%;
+    height: 100vh;
+    /* background-color: red; */
+}
+
+.status-view{
+    border-left: 1px solid black;
+    display: flex;
+    flex: 9.5;
+    width: 50%;
+    height: 100vh;
+    background-color: rgb(239, 234, 226);
+}
+
+
+.my-status{
+    background-color: pink;
+    height: 10vh;
+    margin-top: 10px;
+}
+
+.status-image-view{
+    width: 60vh;
+    height: 70vh;
+}
+
+.status-view-div{
+    background-color: black;
+    width: 100%;
+    height: 100vh;
+    /* padding: 10px; */
+    align-items: center;
+    justify-content: center;
+}
+
+.content-status-div{
+    padding-top: 20px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    padding-left: 10%;
+}
+
+.action-icon{
+    /* margin-left: 50%; */
+}
+
+.view-user-list-status{
+    overflow: scroll;
+    height: 90px;
+    overflow-x: hidden;
+}
