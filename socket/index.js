@@ -26,6 +26,8 @@ io.on("connection", (socket) => {
     console.log(onlineUsers);
   });
 
+  // send indvidual mdssage.
+
   socket.on("send-message", async (data) => {
     console.log(data);
     const user = onlineUsers.find((user) => user.userId == data.recieverid);
@@ -37,6 +39,22 @@ io.on("connection", (socket) => {
       io.to(emitid).emit("receive-message",data);
     }
   });
+
+
+  // send group message
+
+  socket.on("group-send-message", async (data) => {
+    console.log(data);
+    const user = onlineUsers.find((user) => user.userId == data.recieverid);
+    if (user) {
+      console.log(user.socketId + "THIS IS THE USER RETURNING");
+      let emitid = user.socketId;
+      console.log(emitid);
+      io.emit("receive-message", data);
+      // io.to(emitid).emit("receive-message",data);
+    }
+  });
+
 
   socket.on("video-call", async (data) => {
     console.log(data);

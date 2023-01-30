@@ -66,6 +66,9 @@ export const notificationReducer = (state = [], action) => {
     case SET_NOTIFICATION:
       return { notifications: action.payload };
 
+    case UPDATE_NOTIFICATION:
+      return { notifications: [...state, action.payload] };
+
     default:
       return state;
   }
@@ -124,7 +127,7 @@ export const getCallsReducer = (state = [], action) => {
 
     case GET_CALLS_SUCCESS:
       return { loading: false, calls: action.payload };
-      
+
     default:
       return state;
   }

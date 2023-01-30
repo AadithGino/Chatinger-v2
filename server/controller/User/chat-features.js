@@ -39,7 +39,7 @@ exports.GetChats = async (req, res) => {
 
 exports.sendMessage = async (req, res) => {
   let chatid = req.body.chatid;
-  console.log(req.body.token+"TH");
+  console.log(req.body);
   try {
     let message = req.body.message;
     let details;
@@ -50,6 +50,7 @@ exports.sendMessage = async (req, res) => {
         isFile: true,
         content: req.body.image,
         sender: req.body.id,
+        isGroupChat:req.body.group,
         time: Date.now(),
         token:req.body.token
       };
@@ -59,6 +60,7 @@ exports.sendMessage = async (req, res) => {
         isFile: false,
         content: message,
         sender: req.body.id,
+        isGroupChat:req.body.group,
         time: Date.now(),
         token:req.body.token
       };

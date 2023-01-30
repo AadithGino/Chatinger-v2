@@ -1,3 +1,4 @@
+import { Badge, Text } from "@chakra-ui/react";
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -12,18 +13,28 @@ function TopBar({ setcurentchat, setgroupMembers, groupMembers }) {
     <div className="topbar">
       <Profile />
 
-      
-      <i onClick={()=>navigate("/status")} className="fa-solid fa-spinner status-icon"></i>
+      <i
+        onClick={() => navigate("/status")}
+        className="fa-solid fa-spinner status-icon"
+      ></i>
 
-      <i onClick={()=>navigate("/call")} class="fa-solid fa-phone status-icon"></i>
+      <i
+        onClick={() => navigate("/call")}
+        class="fa-solid fa-phone status-icon"
+      ></i>
 
-      <CreateGroup 
+      <i className="fa-solid fa-bell noti-icon">
+        <Badge ml="2" mb='7'  colorScheme="red">
+          5
+        </Badge>
+      </i>
+
+      <CreateGroup
         currentuser={userdata._id}
         setcurentchat={setcurentchat}
         setgroupMembers={setgroupMembers}
         groupMembers={groupMembers}
       />
-      
     </div>
   );
 }

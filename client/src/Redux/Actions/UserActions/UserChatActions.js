@@ -18,6 +18,7 @@ import {
   SET_SELECTED_USER,
   SET_SOCKET_SEND_MESSAGE,
   UPDATE_MESSAGES,
+  UPDATE_NOTIFICATION,
   USER_SEND_MESSAGE_REQUEST,
   USER_SEND_MESSAGE_SUCCESS,
 } from "../../Constants/userConstants";
@@ -25,6 +26,10 @@ const userdata = JSON.parse(localStorage.getItem("chatingerUserInfo"));
 
 export const notificationAction = (data) => async (dispatch) => {
   dispatch({ type: SET_NOTIFICATION, payload: data });
+};
+
+export const addNotification = (data) => async (dispatch) => {
+  dispatch({ type: UPDATE_NOTIFICATION, payload: data });
 };
 
 export const setOnlineUsers = (data) => async (dispatch) => {

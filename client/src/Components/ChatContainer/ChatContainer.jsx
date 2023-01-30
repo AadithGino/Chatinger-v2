@@ -50,7 +50,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef }) {
   useEffect(() => {
     socket.current = io("http://localhost:8800");
     if (socketsendMessage) {
-      socket.current.emit("send-message", socketsendMessage);
+   socket.current.emit("send-message", socketsendMessage);
     }
   }, [socketsendMessage]);
 
@@ -58,6 +58,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef }) {
 
   useEffect(() => {
     if (receiveMessage.data) {
+      console.log(receiveMessage);
       if (
         chat._id === receiveMessage.data[0].chatid &&
         userdata._id != receiveMessage.data[0].sender
@@ -89,12 +90,13 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef }) {
       })
         .then((res) => res.json())
         .then(async (result) => {
-          console.log(result.url);
+          let  group=chat.isGroupChat?true:false;
           let image = result.url;
           const { data } = await sendImage(
             userdata._id,
             chat._id,
             image,
+            group,
             userdata.token
           );
 
@@ -107,10 +109,12 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef }) {
           setMessage("");
         });
     } else {
+      let  group=chat.isGroupChat?true:false;
       const { data } = await sendMessage(
         userdata._id,
         chat._id,
         message,
+        group,
         userdata.token
       );
 
