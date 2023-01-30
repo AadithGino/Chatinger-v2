@@ -33,13 +33,15 @@ io.on("connection", (socket) => {
       console.log(user.socketId + "THIS IS THE USER RETURNING");
       let emitid = user.socketId;
       console.log(emitid);
-      io.emit("receive-message", data);
+      // io.emit("receive-message", data);
+      io.to(emitid).emit("receive-message",data);
     }
   });
 
   socket.on("video-call", async (data) => {
     console.log(data);
     io.emit("recieve-call", data);
+   
   });
 
   socket.on("endCall-by-outgoing", async (data) => {

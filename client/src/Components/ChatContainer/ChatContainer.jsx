@@ -7,6 +7,8 @@ import { io } from "socket.io-client";
 import ChatLoading from "../../ToolComponents/Loading/Loading";
 import Chatbox from "../ChatBox/Chatbox";
 import "./ChatContainer.css";
+import sound from "../../public/Messagenotification.mp3";
+import sound2 from "../../public/currentchatnotification.mp3";
 import {
   createCall,
   fetchUserMessages,
@@ -32,6 +34,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef }) {
   const { messages, messageLoading } = messageData;
   const recieverid = chat.members.find((id) => id !== userdata._id);
   const [userData, setUserData] = useState(null);
+
   const [messageloading, setmessageloading] = useState(false);
   const [message, setMessage] = useState("");
   const [file, setFile] = useState(false);
@@ -54,22 +57,26 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef }) {
   // TO RECIEVE MESSAGE FROM SOCKET IO WHICH IS PASSED FROM HOME COMPONENT
 
   useEffect(() => {
-    if (
-      messageData.length
-        ? messageData.length
-        : "" != 0 &&
-          chat._id === receiveMessage.data[0].chatid &&
-          userdata._id != receiveMessage.data[0].sender
-    ) {
-      dispatch(updateMessagesAction(receiveMessage.data));
-      dispatch(userHome());
-      scrollRef.current.scrollIntoView();
+    if (receiveMessage.data) {
+      if (
+        chat._id === receiveMessage.data[0].chatid &&
+        userdata._id != receiveMessage.data[0].sender
+      ) {
+        dispatch(updateMessagesAction(receiveMessage.data));
+        dispatch(userHome());
+        new Audio(sound2).play();
+        scrollRef.current.scrollIntoView();
+      }
+
+      if (chat._id !== receiveMessage.data[0].chatid) {
+        console.log("SOUND PLAY");
+        new Audio(sound).play();
+      }
     }
   }, [receiveMessage]);
 
   const handleSendMessage = async () => {
     if (file) {
-      // console.log("HEEEEEEEEEEEEEEEEEEEEEE");
       setimageuploadloading(true);
       const data = new FormData();
       data.append("file", file);
@@ -120,7 +127,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef }) {
     dispatch(setMessagesAction(chat._id));
     // findUserDetails(recieverid).then((data) => {
     //   setUserData(data.data);
-    //  
+    //
     // });
     const fetchuserDetails = async () => {
       if (chat.isGroupChat) {
@@ -161,12 +168,11 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef }) {
 
   const videocall = () => {
     createCall(userdata._id, userData._id).then((data) => {
-      
       socket.current = io("http://localhost:8800");
       let details = {
         recieverid,
         userdata,
-        callid:data.data._id
+        callid: data.data._id,
       };
       socket.current.emit("video-call", details);
       outGoingCallRef.current.click();
