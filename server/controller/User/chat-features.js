@@ -50,7 +50,6 @@ exports.sendMessage = async (req, res) => {
         isFile: true,
         content: req.body.image,
         sender: req.body.id,
-        isGroupChat:req.body.group,
         time: Date.now(),
         token:req.body.token
       };
@@ -60,7 +59,6 @@ exports.sendMessage = async (req, res) => {
         isFile: false,
         content: message,
         sender: req.body.id,
-        isGroupChat:req.body.group,
         time: Date.now(),
         token:req.body.token
       };

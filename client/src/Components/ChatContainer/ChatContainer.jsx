@@ -26,7 +26,7 @@ import {
   updateMessagesAction,
 } from "../../Redux/Actions/UserActions/UserChatActions";
 
-function ChatContainer({ chat, receiveMessage, outGoingCallRef }) {
+function ChatContainer({ chat, receiveMessage, outGoingCallRef,setNotification,notification }) {
   const dispatch = useDispatch();
   const socket = useRef();
   const userdata = useSelector((state) => state.loginReducer.userdata);
@@ -50,28 +50,43 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef }) {
   useEffect(() => {
     socket.current = io("http://localhost:8800");
     if (socketsendMessage) {
-   socket.current.emit("send-message", socketsendMessage);
+      let data = {
+        socketsendMessage,
+        isGroupChat:chat.isGroupChat?true:false,
+        members:chat.members
+      }
+   socket.current.emit("send-message", data);
     }
   }, [socketsendMessage]);
 
   // TO RECIEVE MESSAGE FROM SOCKET IO WHICH IS PASSED FROM HOME COMPONENT
 
   useEffect(() => {
-    if (receiveMessage.data) {
-      console.log(receiveMessage);
+    console.log(receiveMessage);
+    if (receiveMessage.socketsendMessage) {
       if (
-        chat._id === receiveMessage.data[0].chatid &&
-        userdata._id != receiveMessage.data[0].sender
+        chat._id === receiveMessage.socketsendMessage.data[0].chatid &&
+        userdata._id != receiveMessage.socketsendMessage.data[0].sender
       ) {
-        dispatch(updateMessagesAction(receiveMessage.data));
+        dispatch(updateMessagesAction(receiveMessage.socketsendMessage.data));
         dispatch(userHome());
         new Audio(sound2).play();
         scrollRef.current.scrollIntoView();
       }
 
-      if (chat._id !== receiveMessage.data[0].chatid) {
+      if (chat._id !== receiveMessage.socketsendMessage.data[0].chatid) {
+       let contains = receiveMessage.members.find((user)=>user===userdata._id);
+       console.log(contains);
+       if(contains){
         console.log("SOUND PLAY");
+       
+        let noticontains = notification.find((data)=>data[0].chatid === receiveMessage.socketsendMessage.data[0].chatid)
+        
+        if(!noticontains){
+          setNotification([receiveMessage.socketsendMessage.data,...notification])
+        }
         new Audio(sound).play();
+       }
       }
     }
   }, [receiveMessage]);
@@ -109,12 +124,10 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef }) {
           setMessage("");
         });
     } else {
-      let  group=chat.isGroupChat?true:false;
       const { data } = await sendMessage(
         userdata._id,
         chat._id,
         message,
-        group,
         userdata.token
       );
 
@@ -128,11 +141,9 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef }) {
   // TO FETCH MESSAGES AND SELECTED USER DETAILS
 
   useEffect(() => {
+    setNotification(notification.filter((data)=>data[0].chatid!=chat._id))
     dispatch(setMessagesAction(chat._id));
-    // findUserDetails(recieverid).then((data) => {
-    //   setUserData(data.data);
-    //
-    // });
+    console.log(chat?chat:'');
     const fetchuserDetails = async () => {
       if (chat.isGroupChat) {
         const { data } = await findGroupMembers(chat._id);

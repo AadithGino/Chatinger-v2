@@ -10,8 +10,8 @@ const config = {
 
 export const findUserDetails = (id) => API.get(`/find-user?id=`+id)
 export const fetchUserMessages = (id) => API.get(`/chat/get-messages?id=`+id)
-export const sendMessage = ( id, chatid, message,group,token ) => API.post('/chat/send-message',{ id, chatid, message,token,group },config)
-export const sendImage = ( id, chatid, image,group,token ) => API.post('/chat/send-message',{ id, chatid, image,token,group },config)
+export const sendMessage = ( id, chatid, message,token ) => API.post('/chat/send-message',{ id, chatid, message,token },config)
+export const sendImage = ( id, chatid, image,token ) => API.post('/chat/send-message',{ id, chatid, image,token },config)
 export const userSearch = (id,search) => API.post('/search',{id,search},config)
 export const userSearchforGroup = (id,search) => API.post('/search',{id,search},config)
 export const userCreateChat = (id,user) => API.post('/chat',{id,user},config)

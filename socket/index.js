@@ -30,30 +30,21 @@ io.on("connection", (socket) => {
 
   socket.on("send-message", async (data) => {
     console.log(data);
-    const user = onlineUsers.find((user) => user.userId == data.recieverid);
+    const user = onlineUsers.find((user) => user.userId == data.socketsendMessage.recieverid);
+    console.log(user);
     if (user) {
       console.log(user.socketId + "THIS IS THE USER RETURNING");
       let emitid = user.socketId;
       console.log(emitid);
-      // io.emit("receive-message", data);
-      io.to(emitid).emit("receive-message",data);
+      io.emit("receive-message", data);
+    }else if(data.isGroupChat){
+      io.emit("receive-message", data);
     }
   });
 
 
   // send group message
 
-  socket.on("group-send-message", async (data) => {
-    console.log(data);
-    const user = onlineUsers.find((user) => user.userId == data.recieverid);
-    if (user) {
-      console.log(user.socketId + "THIS IS THE USER RETURNING");
-      let emitid = user.socketId;
-      console.log(emitid);
-      io.emit("receive-message", data);
-      // io.to(emitid).emit("receive-message",data);
-    }
-  });
 
 
   socket.on("video-call", async (data) => {

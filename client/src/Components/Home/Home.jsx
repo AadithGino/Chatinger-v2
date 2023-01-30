@@ -28,6 +28,7 @@ function Home() {
   const [callData,setCallData]=useState()
   const [receiveMessage, setRecieveMessage] = useState("");
   const [loadsearch, setloadsearch] = useState(false);
+  const [notification,setNotification]=useState([]);
 
   const dispatch = useDispatch();
 
@@ -77,7 +78,7 @@ function Home() {
     <div className="main-div">
       <div className="messenger">
         <div className="chatMenu">
-          <TopBar />
+          <TopBar notification={notification} setNotification={setNotification}/>
           <hr />
           <div className="chatMenuWrapper">
             <CallAlert callRef={callRef} callData={callData} endCallRef={endCallRef} />
@@ -118,7 +119,7 @@ function Home() {
         <div className="chatBox">
           <div className="chatBoxWraper">
             {chatData ? (
-              <ChatContainer outGoingCallRef={outGoingCallRef} chat={chatData} receiveMessage={receiveMessage} />
+              <ChatContainer outGoingCallRef={outGoingCallRef} chat={chatData} receiveMessage={receiveMessage} setNotification={setNotification} notification={notification}/>
             ) : (
               <div
                 style={{
