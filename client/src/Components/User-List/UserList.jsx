@@ -13,7 +13,10 @@ function UserList(props) {
   const [userDetails, setuserdetails] = useState("");
   const userdetails = useSelector((state) => state.findUser);
   const id = props.details.members.find((m) => m !== userdata._id);
-  console.log(id + "THIS IS THE ID IN USERLIST");
+  console.log(props.notification);
+  console.log(props.details._id);
+  const number = props.notification.filter((data)=>data[0].chatid===props.details._id)
+  console.log(number.length+"THIS IS the number of notifications ");
   const fetchuserdata = async () => {
     const { data } = await findUserDetails(id)
     setuserdetails(data);
@@ -54,10 +57,10 @@ function UserList(props) {
                   ? userDetails.fullname
                   : ""}
               </span>
+
+             
+              {number.length===0?'': <span className="notification-badge"></span>}
             </div>
-            {/* {
-            props.details?.latestMessage?.sender === userdata._id? <p className="latest-message-userlist">You : {props.details?.latestMessage.isFile? 'Image':props.details?.latestMessage?.content}</p> : <p className="latest-message-userlist">{userDetails? userDetails.Firstname:''} : {props.details?.latestMessage.isFile?'Image':props.details?.latestMessage?.content}</p>
-            } */}
             <p className="latest-message-time-userlist">
               {format(props.details.updatedAt)}
             </p>

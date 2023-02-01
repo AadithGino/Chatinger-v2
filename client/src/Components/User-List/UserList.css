@@ -48,3 +48,15 @@
     /* margin-right: 37%; */
     font-size: 14px;
 }
+
+.notification-badge{
+    right: 0;
+    width: 20px;
+    margin: 0;
+    margin-left: 30%;
+    height: 20px;
+    border-radius: 50px;
+    color: white;
+    padding-bottom: 10px;
+    background-color: rgb(115, 234, 115);
+}

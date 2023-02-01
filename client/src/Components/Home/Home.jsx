@@ -42,15 +42,20 @@ function Home() {
 
   useEffect(() => {
     socket.current.on("receive-message", (data) => {
-      console.log(data);
-      setRecieveMessage(data);
-      console.log(data);
+      let contains = data.members.find((user)=>user===userdata._id);
+      if(contains) {
+        setRecieveMessage(data);
+      }
+
+      
+      
+ 
     });
   }, []);
 
   useEffect(() => {
     dispatch(userHome());
-  }, []);
+  }, [receiveMessage]);
 
 
   useEffect(()=>{
@@ -108,7 +113,7 @@ function Home() {
                           dispatch(setCurrentChat(m));
                         }}
                       >
-                        <UserList details={m} />
+                        <UserList details={m} notification={notification} />
                       </div>
                     );
                   })
