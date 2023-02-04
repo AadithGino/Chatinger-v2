@@ -31,25 +31,28 @@ function TopBar({ setcurentchat, setgroupMembers, groupMembers,notification,setN
     <MenuButton>
     <i className="fa-solid fa-bell noti-icon">
         <Badge ml="2" mb='7'  colorScheme="red">
-          {notification?notification.length:0}
+          {notification?notification?notification.length:0:''}
         </Badge>
       </i> 
         </MenuButton>
         <MenuList>
-          {notification.length!=0?'':'No New Messages'}
-          {notification?notification.map((m)=>{
-            return(
-              <MenuItem onClick={()=>{
-                setNotification(notification.filter((data)=>data[0].chatid!=m[0].chatid));
-                let chat = homedata.find((data)=>data._id===m[0].chatid)
-                dispatch(setCurrentChat(chat))
-              }} >
-              {
-                m[0].content
-              }
-              </MenuItem>
-            )
-          }):''}
+          {
+            notification? notification.length!=0?notification?notification.map((m)=>{
+              return(
+                <MenuItem onClick={()=>{
+                  setNotification(notification.filter((data)=>data[0].chatid!=m[0].chatid));
+                  let chat = homedata.find((data)=>data._id===m[0].chatid)
+                  dispatch(setCurrentChat(chat))
+                }} >
+                {
+                  m[0].content
+                }
+                </MenuItem>
+              )
+            }):'':'No New Messages' :''
+          }
+          
+          {}
         </MenuList>
     </Menu>
 
