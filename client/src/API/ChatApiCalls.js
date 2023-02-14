@@ -29,3 +29,4 @@ export const createCall = (user1,user2) => API.post("call/create-call",{user1,us
 export const getCalls = (id) => API.get("/call/get-calls?id="+id,config)
 export const acceptCall = (id) => API.get("/call/accept-call?id="+id,config)
 export const declinecall = (id) => API.get("/call/decline-call?id="+id,config)
+export const deleteMyStatus = (id) =>API.get("/status//delete-status?id="+id,config)

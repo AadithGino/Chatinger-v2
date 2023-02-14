@@ -11,4 +11,6 @@ router.route("/get-my-status").get(statusController.getMyStatus)
 
 router.route("/add-view").post(statusController.addView)
 
+router.route("/delete-status").get(statusController.deleteStatus)
+
 module.exports = router;

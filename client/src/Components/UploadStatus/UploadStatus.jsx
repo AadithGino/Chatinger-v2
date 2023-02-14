@@ -16,28 +16,19 @@ import "./UploadStatus.css";
 import { getStatus, uploadStatus } from "../../API/ChatApiCalls";
 import { useSelector } from "react-redux";
 
-function UploadStatus({ setStatus, status }) {
+function UploadStatus({ setMyStatus, status }) {
   const userdata = useSelector((state) => state.loginReducer.userdata);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [text, setText] = useState("");
   const [selectText, setSelectText] = useState(false);
   const [image, setImage] = useState("");
-  const [selectImage, setSelectImage] = useState(false);
+  const [uploading,setUploading]=useState(false);
   const finalRef = React.useRef(null);
 
-  const selectTextfun = () => {
-    setSelectText(true);
-    setSelectImage(false);
-    setImage(false);
-  };
 
-  const selectImafefun = () => {
-    setSelectText(false);
-    setSelectImage(true);
-    setText(false);
-  };
 
   const UploadStatus = () => {
+    setUploading(true)
     const data = new FormData();
     data.append("file", image);
     data.append("upload_preset", "noteapp");
@@ -51,8 +42,9 @@ function UploadStatus({ setStatus, status }) {
         uploadStatus(userdata._id, data.url).then((result) => {
           console.log(result);
           console.log(...status);
-          setStatus([...status, result.data]);
+          setMyStatus( result.data);
           onClose();
+          setUploading(false)
         });
       });
   };
@@ -77,44 +69,37 @@ function UploadStatus({ setStatus, status }) {
               ""
             )}
 
-            {selectImage ? (
-              <img src={image ? URL.createObjectURL(image) : ""} alt="" />
-            ) : (
-              ""
-            )}
 
-            <h2 onClick={selectTextfun}>TEXT</h2>
-            <h2 onClick={selectImafefun}>IMAGE</h2>
+            <img src={image ? URL.createObjectURL(image) : ""} alt="" />
 
-            {selectText ? (
-              <Input
-                onChange={(e) => {
-                  setText(e.target.value);
-                }}
-              />
-            ) : (
-              ""
-            )}
-            {selectImage ? (
-              <Input
-                onChange={(e) => {
-                  setImage(e.target.files[0]);
-                }}
-                type={"file"}
-              />
-            ) : (
-              ""
-            )}
+
+
+            <Input
+              onChange={(e) => {
+                setImage(e.target.files[0]);
+              }}
+              type={"file"}
+            />
+
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="green" mr={3} onClick={UploadStatus}>
+            {
+              uploading? <Button colorScheme="green" mr={3} >
+              Uploading...
+            </Button>:<Button colorScheme="green" mr={3} onClick={UploadStatus}>
               Upload
             </Button>
+            }
+            
 
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            {
+              uploading?  '': <Button colorScheme="blue" mr={3} onClick={onClose}>
               Close
             </Button>
+            }
+
+           
           </ModalFooter>
         </ModalContent>
       </Modal>

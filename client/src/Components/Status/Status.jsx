@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { format } from "timeago.js";
-import { addView, getMyStatus, getStatus } from "../../API/ChatApiCalls";
+import { addView, deleteMyStatus, getMyStatus, getStatus } from "../../API/ChatApiCalls";
 import StatusUserList from "../StatusUserList/StatusUserList";
 import TopBar from "../TopBar/TopBar";
 import UploadStatus from "../UploadStatus/UploadStatus";
@@ -21,7 +21,8 @@ function Status() {
   useEffect(() => {
     getStatus().then((data) => {
       setStatus(data.data);
-    });
+      console.log("hui");
+    }, []);
 
     getMyStatus(userdata._id).then((data) => {
       if (data.data != null) {
@@ -29,6 +30,13 @@ function Status() {
       }
     });
   }, []);
+
+  const deletemystatus = () =>{
+    deleteMyStatus(myStatus._id).then((data)=>{
+      console.log(data);
+      setMyStatus(false)
+    })
+  }
 
   return (
     <div className="status-main-div">
@@ -39,7 +47,7 @@ function Status() {
 
           {myStatus ? (
             <div className="my-status">
-              <div
+              <div style={{ display: "flex" }}
                 onClick={() => {
                   setSelectedStatus(myStatus ? myStatus : "");
                   setUserData(userdata);
@@ -55,11 +63,12 @@ function Status() {
                   />
                 </div>
                 <span>MY STATUS</span>
-                <i className="fa-solid fa-ellipsis-vertical action-icon"></i>
+                <i onClick={deletemystatus} style={{marginLeft:"20%"}} className="fa-solid fa-ellipsis-vertical"></i>
+                
               </div>
             </div>
           ) : (
-            <UploadStatus status={status} setStatus={setStatus} />
+            <UploadStatus status={status} setMyStatus={setMyStatus} />
           )}
 
           {status ? (
@@ -125,12 +134,12 @@ function Status() {
                   <div className="view-user-list-status">
                     {selectedStatus
                       ? selectedStatus.views.map((data) => {
-                          return (
-                            <>
-                              <UserListCommon user={data} />
-                            </>
-                          );
-                        })
+                        return (
+                          <>
+                            <UserListCommon user={data} />
+                          </>
+                        );
+                      })
                       : ""}
                   </div>
                 </>

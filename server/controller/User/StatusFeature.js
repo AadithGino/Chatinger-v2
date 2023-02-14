@@ -1,6 +1,7 @@
 const statusSchema = require("../../model/statusModel");
 const chatSchema = require("../../model/chatModel");
 const { ObjectId } = require("mongodb");
+const { deleteOne } = require("../../model/statusModel");
 
 // upload status
 
@@ -39,7 +40,7 @@ exports.getStatus = async (req, res) => {
     statusSchema.find({}).then((data) => {
       res.status(200).json(data);
     });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 // getting the logged in user details.
@@ -50,7 +51,7 @@ exports.getMyStatus = async (req, res) => {
     statusSchema.findOne({ userid: id }).then((data) => {
       res.status(200).json(data);
     });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 // add views
@@ -76,8 +77,21 @@ exports.addView = async (req, res) => {
             });
         }
       });
-
-   
-
-  } catch (error) {}
+  } catch (error) { }
 };
+
+
+// delete status
+
+exports.deleteStatus = async (req, res) => {
+  let id = req.query.id;
+  console.log(req.query);
+  try {
+    statusSchema.deleteOne({ _id: id }).then((data) => {
+      console.log(deleteOne);
+      res.status(200).json(data)
+    })
+  } catch (error) {
+    res.status(400).json(error)
+  }
+}
