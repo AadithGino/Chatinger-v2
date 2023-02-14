@@ -75,6 +75,7 @@ export const notificationReducer = (state = [], action) => {
 };
 
 export const onlineUserReducer = (state = [], action) => {
+  console.log("DISCONECTED");
   switch (action.type) {
     case SET_ONLINE_USERS:
       return { users: [action.payload] };

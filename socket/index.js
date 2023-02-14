@@ -14,16 +14,19 @@ io.on("connection", (socket) => {
         socketId: socket.id,
       });
     }
+
+
     io.emit("get-users", onlineUsers);
     console.log(onlineUsers);
   });
 
+
+
   socket.on("disconnect", () => {
     console.log("DISCONNECGTT");
-    onlineUsers = onlineUsers.filter((users) => users.socketId !== socket.id);
-    console.log("DISCONNECTED");
-    console.log("left users");
-    console.log(onlineUsers);
+    onlineUsers = onlineUsers.filter((users) => users.socketId !== socket.id);;
+    // console.log(onlineUsers);
+    io.emit("get-users", onlineUsers);
   });
 
   // send indvidual mdssage.
@@ -37,7 +40,7 @@ io.on("connection", (socket) => {
       let emitid = user.socketId;
       console.log(emitid);
       io.emit("receive-message", data);
-    }else if(data.isGroupChat){
+    } else if (data.isGroupChat) {
       io.emit("receive-message", data);
     }
   });
@@ -50,14 +53,32 @@ io.on("connection", (socket) => {
   socket.on("video-call", async (data) => {
     console.log(data);
     io.emit("recieve-call", data);
-   
+
   });
 
   socket.on("endCall-by-outgoing", async (data) => {
     io.emit("endcall-outGoing", data);
   });
 
-  socket.on("Decline-call",async(data)=>{
-    io.emit("decline-call-outgoing",data)
+  socket.on("Decline-call", async (data) => {
+    io.emit("decline-call-outgoing", data)
+  })
+
+  // typing indicator
+
+  socket.on("Typing", async (data) => {
+    console.log("TYPING");
+    io.emit("typing", data)
+    console.log(data);
+  })
+
+  socket.on("stopTyping", async (data) => {
+    io.emit("stoptyping", data)
+    console.log("Stop typing");
   })
 });
+
+
+
+
+

@@ -29,6 +29,7 @@ function Home() {
   const [receiveMessage, setRecieveMessage] = useState("");
   const [loadsearch, setloadsearch] = useState(false);
   const [notification,setNotification]=useState([]);
+  const [isTyping,setIsTypingHome]=useState(false);
 
   const dispatch = useDispatch();
 
@@ -46,10 +47,11 @@ function Home() {
       if(contains) {
         setRecieveMessage(data);
       }
+    });
 
-      
-      
- 
+    socket.current.on("get-users", (users) => {
+      console.log("GET_USERS_SOCKET.IO");
+      dispatch(setOnlineUsers(users));
     });
   }, []);
 
@@ -113,7 +115,7 @@ function Home() {
                           dispatch(setCurrentChat(m));
                         }}
                       >
-                        <UserList details={m} notification={notification} />
+                        <UserList details={m} notification={notification} isTyping={isTyping} />
                       </div>
                     );
                   })
@@ -124,7 +126,7 @@ function Home() {
         <div className="chatBox">
           <div className="chatBoxWraper">
             {chatData ? (
-              <ChatContainer outGoingCallRef={outGoingCallRef} chat={chatData} receiveMessage={receiveMessage} setNotification={setNotification} notification={notification}/>
+              <ChatContainer setIsTypingHome={setIsTypingHome} outGoingCallRef={outGoingCallRef} chat={chatData} receiveMessage={receiveMessage} setNotification={setNotification} notification={notification}/>
             ) : (
               <div
                 style={{

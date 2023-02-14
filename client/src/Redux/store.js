@@ -7,6 +7,7 @@ import {
   getCallsReducer,
   messagesReducer,
   notificationReducer,
+  onlineUserReducer,
   setSelectedUserReducer,
   socketSendMessageReducer,
   userHomeReducer,
@@ -30,6 +31,7 @@ const reducer = combineReducers({
   socketSendMessageReducer: socketSendMessageReducer,
   setSelectedUserReducer: setSelectedUserReducer,
   getCallReducer:getCallsReducer,
+  onlineUserReducer:onlineUserReducer,
 });
 
 let userinfo = JSON.parse(localStorage.getItem("chatingerUserInfo"));

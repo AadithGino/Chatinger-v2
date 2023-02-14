@@ -31,4 +31,7 @@ router.post("/group-add",groupController.AddGroupMembers)
 //change group name 
 router.post("/group-change-name",groupController.editGroupName)
 
+// add notifcation 
+// router.router("/add-notification")
+
 module.exports = router;

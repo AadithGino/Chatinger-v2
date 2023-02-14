@@ -11,6 +11,7 @@ const usersLogin_SignupRouter = require("./routes/UserRoutes/signup-login");
 const userChatRoutes = require("./routes/UserRoutes/chat-Routes");
 const userStatusRoutes = require("./routes/UserRoutes/status-Routes");
 const userCallRoutes = require("./routes/UserRoutes/callRoutes")
+const adminRoutes = require("./routes/Admin/adminLoginRoutes")
 dotenv.config();
 
 const app = express();
@@ -37,6 +38,7 @@ app.use("/", userHomeRoutes);
 app.use("/chat", userChatRoutes);
 app.use("/status",userStatusRoutes);
 app.use("/call",userCallRoutes);
+app.use("/admin",adminRoutes)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

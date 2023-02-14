@@ -26,7 +26,7 @@ import {
   updateMessagesAction,
 } from "../../Redux/Actions/UserActions/UserChatActions";
 
-function ChatContainer({ chat, receiveMessage, outGoingCallRef,setNotification,notification }) {
+function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification, notification, setIsTypingHome }) {
   const dispatch = useDispatch();
   const socket = useRef();
   const userdata = useSelector((state) => state.loginReducer.userdata);
@@ -34,7 +34,8 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef,setNotification,n
   const { messages, messageLoading } = messageData;
   const recieverid = chat.members.find((id) => id !== userdata._id);
   const [userData, setUserData] = useState(null);
-
+  const [typing, setTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [messageloading, setmessageloading] = useState(false);
   const [message, setMessage] = useState("");
   const [file, setFile] = useState(false);
@@ -42,6 +43,22 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef,setNotification,n
   const [imageuploadloading, setimageuploadloading] = useState(false);
   const [members, setMembers] = useState();
   const [preview, setPreview] = useState("");
+  const onlineUser = useSelector((state) => state.onlineUserReducer.users);
+  const [online, setOnline] = useState(false);
+  let chatingUser = false;
+
+
+  useEffect(() => {
+    let status = false;
+    status = onlineUser ? onlineUser[0].find((item) => item.userId === recieverid) : ""
+    console.log(status);
+    console.log("ONLINE USER");
+    if (status) {
+      setOnline(true)
+    } else {
+      setOnline(false)
+    }
+  }, [chat, onlineUser])
 
   const scrollRef = useRef();
   const imageinputref = useRef(null);
@@ -52,10 +69,16 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef,setNotification,n
     if (socketsendMessage) {
       let data = {
         socketsendMessage,
-        isGroupChat:chat.isGroupChat?true:false,
-        members:chat.members
+        isGroupChat: chat.isGroupChat ? true : false,
+        members: chat.members
       }
-   socket.current.emit("send-message", data);
+      socket.current.emit("send-message", data);
+      let typingdata = {
+        id: userdata._id,
+        chatid: chat._id
+      }
+      socket.current.emit("stopTyping", typingdata)
+
     }
   }, [socketsendMessage]);
 
@@ -75,18 +98,18 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef,setNotification,n
       }
 
       if (chat._id !== receiveMessage.socketsendMessage.data[0].chatid) {
-       let contains = receiveMessage.members.find((user)=>user===userdata._id);
-       console.log(contains);
-       if(contains){
-        console.log("SOUND PLAY");
-       
-        let noticontains = notification.find((data)=>data[0].chatid === receiveMessage.socketsendMessage.data[0].chatid)
-        
-        if(!noticontains){
-          setNotification([receiveMessage.socketsendMessage.data,...notification])
+        let contains = receiveMessage.members.find((user) => user === userdata._id);
+        console.log(contains);
+        if (contains) {
+          console.log("SOUND PLAY");
+
+          let noticontains = notification.find((data) => data[0].chatid === receiveMessage.socketsendMessage.data[0].chatid)
+
+          if (!noticontains) {
+            setNotification([receiveMessage.socketsendMessage.data, ...notification])
+          }
+          new Audio(sound).play();
         }
-        new Audio(sound).play();
-       }
       }
     }
   }, [receiveMessage]);
@@ -105,7 +128,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef,setNotification,n
       })
         .then((res) => res.json())
         .then(async (result) => {
-          let  group=chat.isGroupChat?true:false;
+          let group = chat.isGroupChat ? true : false;
           let image = result.url;
           const { data } = await sendImage(
             userdata._id,
@@ -141,9 +164,11 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef,setNotification,n
   // TO FETCH MESSAGES AND SELECTED USER DETAILS
 
   useEffect(() => {
-    setNotification(notification.filter((data)=>data[0].chatid!=chat._id))
+    setIsTyping(false);
+    setTyping(false);
+    setNotification(notification.filter((data) => data[0].chatid != chat._id))
     dispatch(setMessagesAction(chat._id));
-    console.log(chat?chat:'');
+    console.log(chat ? chat : '');
     const fetchuserDetails = async () => {
       if (chat.isGroupChat) {
         const { data } = await findGroupMembers(chat._id);
@@ -170,6 +195,30 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef,setNotification,n
   useEffect(() => {
     scrollRef?.current?.scrollIntoView();
   }, [messageData, file]);
+
+
+  // typing indicator 
+
+  useEffect(() => {
+    // socket.current = io("http://localhost:8800");
+    socket.current.on("typing", (data) => {
+
+      if (data.id != userdata._id) {
+        setIsTypingHome(data)
+        console.log("SET TYPING WITH DATA");
+    
+        setIsTyping(data)
+      }
+      if (isTyping) {
+        scrollRef.current.scrollIntoView();
+      }
+    })
+
+    socket.current.on("stoptyping", (data) => {
+      setIsTypingHome(false)
+      setIsTyping(false)
+    })
+  }, [typing])
 
   // handle image input
 
@@ -209,19 +258,34 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef,setNotification,n
               chat.isGroupChat
                 ? chat.chatName
                 : userData
-                ? userData.fullname
-                : ""
+                  ? userData.fullname
+                  : ""
             }
             src={chat.isGroupChat ? chat.photo : userData ? userData.photo : ""}
           />
 
-          <h3 className="user-name">
-            {chat.isGroupChat
-              ? chat.chatName
-              : userData
-              ? userData.fullname
-              : ""}
-          </h3>
+          <div style={{ display: 'flex', flexDirection: "column" }}>
+            <h3 className="user-name">
+              {chat.isGroupChat
+                ? chat.chatName
+                : userData
+                  ? userData.fullname
+                  : ""}
+            </h3>
+
+            {
+
+
+              isTyping ? isTyping.chatid == chat._id ? <h3 style={{ color: "black" }}>Typing</h3> : '' : ''
+
+            }
+            {
+              chat.isGroupChat ? '' : online ? <p style={{ color: "black" }}>Online</p> : ''
+            }
+            {
+              console.log(isTyping)
+            }
+          </div>
           <br />
 
           {chat.isGroupChat ? (
@@ -297,9 +361,11 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef,setNotification,n
           ) : (
             ""
           )}
+          {isTyping ? <p>Typing...</p> : ''}
         </div>
 
         <div className="chatBoxBottom">
+
           <input
             ref={imageinputref}
             onChange={(e) => {
@@ -325,6 +391,35 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef,setNotification,n
             onChange={(e) => {
               setMessage(e.target.value);
               setFile(false);
+
+              if (!typing) {
+
+                setTyping(true)
+                let data = {
+                  id: userdata._id,
+                  chatid: chat._id
+                }
+                socket.current = io("http://localhost:8800");
+                socket.current.emit('Typing', data)
+              }
+
+              let lastTypingTime = new Date().getTime();
+              let timerLength = 3000;
+
+              setTimeout(() => {
+                setTyping(false)
+                console.log("STOP TYPING");
+                let timeNow = new Date().getTime();
+                let timeDifference = timeNow - lastTypingTime;
+                let data = {
+                  id: userdata._id,
+                  chatid: chat._id
+                }
+                if (timeDifference >= timerLength && typing) {
+                  socket.current = io("http://localhost:8800");
+                  socket.current.emit("stopTyping", data)
+                }
+              }, timerLength);
             }}
           ></textarea>
           {message.length == 0 && !file ? (

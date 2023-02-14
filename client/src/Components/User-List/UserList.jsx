@@ -58,9 +58,11 @@ function UserList(props) {
                   : ""}
               </span>
 
+              
              
               {number.length===0?'': <span className="notification-badge"></span>}
             </div>
+            <p style={{color:"green"}}>{props.isTyping?props.isTyping.chatid==props.details._id?'Typing...':'':''}</p>
             <p className="latest-message-time-userlist">
               {format(props.details.updatedAt)}
             </p>

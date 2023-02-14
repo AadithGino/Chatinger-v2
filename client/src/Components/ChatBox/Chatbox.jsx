@@ -2,7 +2,7 @@ import React from "react";
 import "./Chatbox.css";
 import { format } from "timeago.js";
 import { useSelector } from "react-redux";
-import { Avatar } from "@chakra-ui/react";
+import { Avatar, Tooltip } from "@chakra-ui/react";
 function Chatbox({ own, message, otheruser, groupMembers, chat }) {
   console.log(message);
   const userdata = useSelector((state) => state.loginReducer.userdata);
@@ -29,11 +29,14 @@ function Chatbox({ own, message, otheruser, groupMembers, chat }) {
                 groupMembers.map((m) => {
                   if (m.user[0]._id == message.sender) {
                     return (
-                      <Avatar
+                      <Tooltip label={m.user[0].fullname} aria-label='A tooltip' hasArrow arrowSize={15}>
+                        <Avatar
                         size="sm"
                         name={m.user[0].fullname}
                         src={m.user[0].photo}
                       />
+                      </Tooltip>
+                      
                     );
                   }
                 })

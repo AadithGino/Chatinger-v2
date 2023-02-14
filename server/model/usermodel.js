@@ -6,7 +6,9 @@ const userSchema = new mongoose.Schema({
     fullname:{type:String},
     number:{type:Number,unique:true},
     password:{type:String},
-    photo : {type:String}
+    notification:[],
+    photo : {type:String},
+    status:{type:Boolean,default:true}
 })
 
 const model = mongoose.model('USER',userSchema)
