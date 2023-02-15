@@ -25,7 +25,7 @@ exports.CreateChat = async (req, res) => {
 exports.GetChats = async (req, res) => {
   try {
     let id = req.query.id;
-    console.log(id);
+    
     ``;
 
     chatSchema
@@ -69,9 +69,9 @@ exports.sendMessage = async (req, res) => {
         { $push: { messages: [details] }, $set: { latestMessage: details } }
       )
       .then((data) => {
-        console.log(details);
+        // console.log(details);
         res.status(200).json([details]);
-        console.log(details);
+        // console.log(details);
       })
       .catch((err) => {
         console.log(err);
@@ -85,7 +85,7 @@ exports.getMessages = async (req, res) => {
     console.log(id);
     chatSchema.findOne({ _id: id }).then((data) => {
       res.status(200).json(data.messages);
-      console.log(data.messages);
+      // console.log(data.messages);
     });
   } catch (error) {}
 };

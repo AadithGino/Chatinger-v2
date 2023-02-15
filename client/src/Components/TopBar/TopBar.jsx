@@ -7,7 +7,7 @@ import CreateGroup from "../CreateGroup/CreateGroup";
 import Profile from "../Profile/Profile";
 import "./TopBar.css";
 
-function TopBar({ setcurentchat, setgroupMembers, groupMembers,notification,setNotification }) {
+function TopBar({ setcurentchat, setgroupMembers, groupMembers, notification, setNotification }) {
   const userdata = useSelector((state) => state.loginReducer.userdata);
   const { loading, error, homedata } = useSelector((state) => state.userHome);
   const navigate = useNavigate();
@@ -26,35 +26,39 @@ function TopBar({ setcurentchat, setgroupMembers, groupMembers,notification,setN
         class="fa-solid fa-phone status-icon"
       ></i>
 
-     
-    <Menu>
-    <MenuButton>
-    <i className="fa-solid fa-bell noti-icon">
-        <Badge ml="2" mb='7'  colorScheme="red">
-          {notification?notification?notification.length:0:''}
-        </Badge>
-      </i> 
+
+      <Menu>
+        <MenuButton>
+          <i className="fa-solid fa-bell noti-icon">
+            <Badge ml="2" mb='7' colorScheme="red">
+              {notification ? notification ? notification.length : 0 : ''}
+            </Badge>
+          </i>
         </MenuButton>
         <MenuList>
           {
-            notification? notification.length!=0?notification?notification.map((m)=>{
-              return(
-                <MenuItem onClick={()=>{
-                  setNotification(notification.filter((data)=>data[0].chatid!=m[0].chatid));
-                  let chat = homedata.find((data)=>data._id===m[0].chatid)
-                  dispatch(setCurrentChat(chat))
-                }} >
-                {
-                  m[0].content
-                }
-                </MenuItem>
+            notification ? notification.length != 0 ? notification ? notification.map((m) => {
+              return (
+                <>
+                  <MenuItem onClick={() => {
+                    setNotification(notification.filter((data) => data[0].chatid != m[0].chatid));
+                    let chat = homedata.find((data) => data._id === m[0].chatid)
+                    dispatch(setCurrentChat(chat))
+                  }} >
+                    {
+                      m[0].content
+                    }
+                   
+                  </MenuItem>
+                </>
               )
-            }):'':'No New Messages' :''
+            }
+            ) : '' : 'No New Messages' : ''
           }
-          
-          {}
+
+          { }
         </MenuList>
-    </Menu>
+      </Menu>
 
       <CreateGroup
         currentuser={userdata._id}

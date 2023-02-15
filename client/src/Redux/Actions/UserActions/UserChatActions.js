@@ -12,6 +12,8 @@ import {
   CURRENT_CHAT_SUCCESS,
   GET_CALLS_REQUEST,
   GET_CALLS_SUCCESS,
+  GET_NOTIFICATION_REQUSET,
+  GET_NOTIFICATION_SUCCESS,
   SET_MESSAGES,
   SET_NOTIFICATION,
   SET_ONLINE_USERS,
@@ -23,6 +25,14 @@ import {
   USER_SEND_MESSAGE_SUCCESS,
 } from "../../Constants/userConstants";
 const userdata = JSON.parse(localStorage.getItem("chatingerUserInfo"));
+
+export const getNotificationAction = (id) =>async(dispatch)=>{
+  dispatch({type:GET_NOTIFICATION_REQUSET})
+  const {data} = findUserDetails(userdata._id)
+  dispatch({type:GET_NOTIFICATION_SUCCESS,payload:data})
+}
+
+
 
 export const notificationAction = (data) => async (dispatch) => {
   dispatch({ type: SET_NOTIFICATION, payload: data });

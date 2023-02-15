@@ -10,10 +10,12 @@ import "./ChatContainer.css";
 import sound from "../../public/Messagenotification.mp3";
 import sound2 from "../../public/currentchatnotification.mp3";
 import {
+  addNotification,
   createCall,
   fetchUserMessages,
   findGroupMembers,
   findUserDetails,
+  removeNotification,
   sendImage,
   sendMessage,
 } from "../../API/ChatApiCalls";
@@ -101,12 +103,13 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
         let contains = receiveMessage.members.find((user) => user === userdata._id);
         console.log(contains);
         if (contains) {
-          console.log("SOUND PLAY");
 
           let noticontains = notification.find((data) => data[0].chatid === receiveMessage.socketsendMessage.data[0].chatid)
 
           if (!noticontains) {
             setNotification([receiveMessage.socketsendMessage.data, ...notification])
+            addNotification(userdata._id,[receiveMessage.socketsendMessage.data])
+            console.log(receiveMessage.socketsendMessage.data);
           }
           new Audio(sound).play();
         }
@@ -166,7 +169,9 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
   useEffect(() => {
     setIsTyping(false);
     setTyping(false);
+    let clearednoti = notification.filter((data) => data[0].chatid != chat._id)
     setNotification(notification.filter((data) => data[0].chatid != chat._id))
+    removeNotification(userdata._id,clearednoti)
     dispatch(setMessagesAction(chat._id));
     console.log(chat ? chat : '');
     const fetchuserDetails = async () => {
@@ -206,7 +211,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
       if (data.id != userdata._id) {
         setIsTypingHome(data)
         console.log("SET TYPING WITH DATA");
-    
+
         setIsTyping(data)
       }
       if (isTyping) {

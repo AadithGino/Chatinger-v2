@@ -15,6 +15,7 @@ import TopBar from "../TopBar/TopBar";
 import { setOnlineUsers } from "../../Redux/Actions/UserActions/UserChatActions";
 import CallAlert from "../CallAlert/CallAlert";
 import OutGoingCallAlert from "../OutGoingAlert/OutGoingCallAlert";
+import { findUserDetails } from "../../API/ChatApiCalls";
 
 function Home() {
   const callRef = useRef()
@@ -25,11 +26,11 @@ function Home() {
   const { loading, error, homedata } = useSelector((state) => state.userHome);
   const chatData = useSelector((state) => state.currentChatReducer.currentChat);
   console.log(chatData);
-  const [callData,setCallData]=useState()
+  const [callData, setCallData] = useState()
   const [receiveMessage, setRecieveMessage] = useState("");
   const [loadsearch, setloadsearch] = useState(false);
-  const [notification,setNotification]=useState([]);
-  const [isTyping,setIsTypingHome]=useState(false);
+  const [notification, setNotification] = useState([]);
+  const [isTyping, setIsTypingHome] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -39,12 +40,22 @@ function Home() {
     socket.current.on("get-users", (users) => {
       dispatch(setOnlineUsers(users));
     });
+    findUserDetails(userdata?userdata._id:'').then((data)=>{
+      console.log("NOTIFI BACKEN");
+      console.log(data.data.notification.length);
+      if(data.data?.notification.length > 0){
+        console.log(data.data.notification)
+        let noti = data.data.notification;
+        setNotification(noti)
+        console.log(notification);
+      }
+    })
   }, [userdata]);
 
   useEffect(() => {
     socket.current.on("receive-message", (data) => {
-      let contains = data.members.find((user)=>user===userdata._id);
-      if(contains) {
+      let contains = data.members.find((user) => user === userdata._id);
+      if (contains) {
         setRecieveMessage(data);
       }
     });
@@ -60,36 +71,34 @@ function Home() {
   }, [receiveMessage]);
 
 
-  useEffect(()=>{
-    socket.current.on("recieve-call",(data)=>{
-      if(data.recieverid===userdata._id){
+  useEffect(() => {
+    socket.current.on("recieve-call", (data) => {
+      if (data.recieverid === userdata._id) {
         console.log("IM THE USER RECIEVEING CALL");
         setCallData(data)
         callRef.current.click()
       }
-      console.log("CALL RECIEVED");
     })
-  },[])
+  }, [])
 
-  useEffect(()=>{
-    socket.current.on("endcall-outGoing",(data)=>{
-      if(data===userdata._id){
-        console.log("END RUNNING CALL");
+  useEffect(() => {
+    socket.current.on("endcall-outGoing", (data) => {
+      if (data === userdata._id) {
         endCallRef.current.click()
       }
     })
-  },[])
+  }, [])
 
-  
+
   return (
     <div className="main-div">
       <div className="messenger">
         <div className="chatMenu">
-          <TopBar notification={notification} setNotification={setNotification}/>
+          <TopBar notification={notification} setNotification={setNotification} />
           <hr />
           <div className="chatMenuWrapper">
             <CallAlert callRef={callRef} callData={callData} endCallRef={endCallRef} />
-            <OutGoingCallAlert outGoingCallRef={outGoingCallRef} callData={userdata}/>
+            <OutGoingCallAlert outGoingCallRef={outGoingCallRef} callData={userdata} />
             {loadsearch ? (
               ""
             ) : (
@@ -109,16 +118,16 @@ function Home() {
             {loadsearch == false
               ? homedata
                 ? homedata.map((m) => {
-                    return (
-                      <div
-                        onClick={() => {
-                          dispatch(setCurrentChat(m));
-                        }}
-                      >
-                        <UserList details={m} notification={notification} isTyping={isTyping} />
-                      </div>
-                    );
-                  })
+                  return (
+                    <div
+                      onClick={() => {
+                        dispatch(setCurrentChat(m));
+                      }}
+                    >
+                      <UserList details={m} notification={notification} isTyping={isTyping} />
+                    </div>
+                  );
+                })
                 : ""
               : ""}
           </div>
@@ -126,7 +135,7 @@ function Home() {
         <div className="chatBox">
           <div className="chatBoxWraper">
             {chatData ? (
-              <ChatContainer setIsTypingHome={setIsTypingHome} outGoingCallRef={outGoingCallRef} chat={chatData} receiveMessage={receiveMessage} setNotification={setNotification} notification={notification}/>
+              <ChatContainer setIsTypingHome={setIsTypingHome} outGoingCallRef={outGoingCallRef} chat={chatData} receiveMessage={receiveMessage} setNotification={setNotification} notification={notification} />
             ) : (
               <div
                 style={{
