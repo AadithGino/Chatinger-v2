@@ -16,7 +16,7 @@ function Alert({message,action,functiontobedone}) {
   return (
     <div>
        <>
-      <Button  backgroundColor={'red'} onClick={onOpen}  >Logout</Button>
+      <Button  backgroundColor={'red'} onClick={onOpen}  >{action}</Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />

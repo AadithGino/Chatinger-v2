@@ -9,6 +9,7 @@ import {
   USER_HOME_REQUEST,
   USER_HOME_SUCCESS,
 } from "../../Constants/userConstants";
+import { SET_VIDEO_CALL_ID } from "../../Constants/videoCallConstant";
 const baseUrl = "http://localhost:5000";
 
 export const userHome = () => async (dispatch) => {
@@ -58,4 +59,9 @@ export const findUserDetailsAction = (id) => async (dispatch) => {
 
 export const setCurrentChat = (chat) =>async(dispatch)=>{
   dispatch({type:SET_CURRENT_CHAT,payload:chat})
+}
+
+export const setVideoCallidAction = (data) =>async(dispatch)=>{
+  dispatch({type:SET_VIDEO_CALL_ID,payload:data})
+  console.log("KOOOI");
 }

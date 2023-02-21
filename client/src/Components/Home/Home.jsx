@@ -74,7 +74,6 @@ function Home() {
   useEffect(() => {
     socket.current.on("recieve-call", (data) => {
       if (data.recieverid === userdata._id) {
-        console.log("IM THE USER RECIEVEING CALL");
         setCallData(data)
         callRef.current.click()
       }

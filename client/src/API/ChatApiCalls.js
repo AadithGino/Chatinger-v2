@@ -32,3 +32,7 @@ export const declinecall = (id) => API.get("/call/decline-call?id="+id,config)
 export const deleteMyStatus = (id) =>API.get("/status/delete-status?id="+id,config)
 export const addNotification = (id,notification)=>  API.post("/add-notification",{id,notification},config);
 export const removeNotification = (id,noti)=>API.post("/remove-notification",{id,noti},config)
+export const adminLogin  = (email,password)=>API.post("/admin/login",{email,password},config)
+export const adminGetAllUsers = () => API.get("/admin/get-all-user")
+export const adminGetOneUser = (id) => API.get("/admin/find-user?id="+id)
+export const blockUser = (id) => API.get("/admin/block-user?id="+id)

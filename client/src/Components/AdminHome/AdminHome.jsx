@@ -1,0 +1,67 @@
+import axios from 'axios';
+import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { io } from 'socket.io-client';
+import { adminGetAllUsers } from '../../API/ChatApiCalls';
+import AdminUserList from '../AdminUserList/AdminUserList';
+import './AdminHome.css'
+
+function AdminHome() {
+    let socket = useRef();
+    const [onlineUsers, setOnlineUsers] = useState();
+    const [users, setUsers] = useState([]);
+    const [blockUser, setBlockUser] = useState();
+
+    socket.current = io("http://localhost:8800");
+    socket.current.on("get-users", (users) => {
+        console.log(users);
+        setOnlineUsers(users)
+    });
+
+    useEffect(() => {
+        console.log(blockUser);
+        adminGetAllUsers().then((data) => {
+            setUsers(data.data)
+            console.log(users);
+            console.log("hi");
+        })
+    }, [blockUser])
+
+
+
+    return (
+        <div>
+           <div className="details">
+           <h2>Number of online users {onlineUsers ? onlineUsers.length : 0}</h2>
+            <h2>Number of total users {users ? users.length : ''}</h2>
+           </div>
+           <div className="containderusers">
+            <div className="allusers">
+                <h1>ALL USERS</h1>
+            {
+                users ? users.map((m) => {
+                    return (
+                        <AdminUserList setBlockUser={setBlockUser} user={m} />
+                    )
+                }) : ''
+            }
+            </div>
+            <div className="onlineusers">
+                <h1>ONLINE USERS</h1>
+                {
+                    onlineUsers?onlineUsers.map((m)=>{
+                        return(
+                            <>
+                            <AdminUserList user={m} />
+                            </>
+                        )
+
+                    }):''
+                }
+            </div>
+           </div>
+        </div>
+    )
+}
+
+export default AdminHome

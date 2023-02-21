@@ -1,6 +1,7 @@
 import { combineReducers, createStore, applyMiddleware } from "redux";
 import { composeWithDevTools } from "redux-devtools-extension";
 import thunk from "redux-thunk";
+import { adminLoginReducer } from "./Reducer/AdminReducer";
 import {
   curentChatReducer,
   findUserDetailsReducer,
@@ -17,6 +18,7 @@ import {
   userSignupReducer,
   verifyOTPReducer,
 } from "./Reducer/UserLoginSignupReducer";
+import { videoCallIdReducer } from "./Reducer/VideoCallReducer";
 const middleware = [thunk];
 
 const reducer = combineReducers({
@@ -32,12 +34,16 @@ const reducer = combineReducers({
   setSelectedUserReducer: setSelectedUserReducer,
   getCallReducer:getCallsReducer,
   onlineUserReducer:onlineUserReducer,
+  videoCallReducer:videoCallIdReducer,
+  adminLoginReducer:adminLoginReducer
 });
 
 let userinfo = JSON.parse(localStorage.getItem("chatingerUserInfo"));
+let admininfo = JSON.parse(localStorage.getItem("chatingerAdminInfo"));
 
 const initialstate = {
   loginReducer: { userdata: userinfo },
+  adminLoginReducer:{adminData:admininfo}
 };
 
 const store = createStore(

@@ -1,0 +1,2 @@
+export const SET_VIDEO_CALL_ID = "SET_VIDEO_CALL_ID";
+export const REMOVE_VIDEO_CALL_ID = "REMOVE_VIDEO_CALL_ID";

@@ -1,0 +1,16 @@
+.adminUserListContainer{
+    display: flex;
+}
+
+.nameArea{
+    margin-left: 50px;
+}
+.adminUserListContainer{
+    margin-bottom: 20px;
+    border: none;
+    border-bottom: black solid 1px;
+    
+}
+.imgArea{
+    margin-bottom: 10px;
+}

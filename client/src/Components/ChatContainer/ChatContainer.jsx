@@ -20,15 +20,18 @@ import {
   sendMessage,
 } from "../../API/ChatApiCalls";
 import GroupInfo from "../GroupInfo/GroupInfo";
-import { userHome } from "../../Redux/Actions/UserActions/UserHomeAction";
+import { setVideoCallidAction, userHome } from "../../Redux/Actions/UserActions/UserHomeAction";
 import { Avatar } from "@chakra-ui/react";
 import {
   setMessagesAction,
   setSelectedUserAction,
   updateMessagesAction,
 } from "../../Redux/Actions/UserActions/UserChatActions";
+import { useNavigate } from "react-router-dom";
+
 
 function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification, notification, setIsTypingHome }) {
+  const navigate = useNavigate()
   const dispatch = useDispatch();
   const socket = useRef();
   const userdata = useSelector((state) => state.loginReducer.userdata);
@@ -108,7 +111,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
 
           if (!noticontains) {
             setNotification([receiveMessage.socketsendMessage.data, ...notification])
-            addNotification(userdata._id,[receiveMessage.socketsendMessage.data])
+            addNotification(userdata._id, [receiveMessage.socketsendMessage.data])
             console.log(receiveMessage.socketsendMessage.data);
           }
           new Audio(sound).play();
@@ -171,7 +174,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
     setTyping(false);
     let clearednoti = notification.filter((data) => data[0].chatid != chat._id)
     setNotification(notification.filter((data) => data[0].chatid != chat._id))
-    removeNotification(userdata._id,clearednoti)
+    removeNotification(userdata._id, clearednoti)
     dispatch(setMessagesAction(chat._id));
     console.log(chat ? chat : '');
     const fetchuserDetails = async () => {
@@ -243,6 +246,9 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
         userdata,
         callid: data.data._id,
       };
+      dispatch(setVideoCallidAction(data.data._id))
+      navigate("/video-call")
+
       socket.current.emit("video-call", details);
       outGoingCallRef.current.click();
     });

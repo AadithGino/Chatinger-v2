@@ -8,9 +8,14 @@ import Signup from "./Components/SIGNUP/Signup";
 import VerifyOTP from "./Components/VerifyOtp/VerifyOTP";
 import Status from "./Components/Status/Status";
 import CallHistory from "./Components/CallHistory/CallHistory";
+import Videocall from "./Components/Video_Call/Videocall";
+import AdminLogin from "./Components/AdminLogin/AdminLogin";
+import AdminHome from "./Components/AdminHome/AdminHome";
 
 function App() {
   const userdata = useSelector((state) => state.loginReducer.userdata);
+  const admindata = useSelector((state)=>state.adminLoginReducer.adminData)
+  const roomId = useSelector((state) => state.videoCallReducer.roomId)
   console.log(userdata);
   return (
     <div className="App">
@@ -45,6 +50,24 @@ function App() {
           path="/call"
           element={userdata ? <CallHistory /> : <Navigate to="../login" />}
         />
+
+        <Route
+          path='/video-call'
+          element={<Videocall />}
+        />
+
+        <Route
+          path="/admin/login"
+          element={admindata ?<Navigate to="../admin" /> : <AdminLogin/>}
+        />
+
+<Route
+          path="/admin"
+          element={admindata ?<AdminHome/> : <Navigate to="../admin/login" />}
+        />
+
+
+
       </Routes>
     </div>
   );

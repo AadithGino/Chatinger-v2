@@ -14,10 +14,16 @@ import {
 import "./CallAlert.css";
 import { io } from "socket.io-client";
 import { acceptCall, declinecall } from "../../API/ChatApiCalls";
+import { useNavigate } from "react-router-dom";
+import { setVideoCallidAction } from "../../Redux/Actions/UserActions/UserHomeAction";
+import { useDispatch } from "react-redux";
+
 
 function CallAlert({ callRef, callData, endCallRef }) {
+  const dipatch = useDispatch()
   const { isOpen, onOpen, onClose } = useDisclosure();
   const socket = useRef();
+  const navigate = useNavigate()
 
   const declineCall = () => {
     socket.current = io("http://localhost:8800");
@@ -29,6 +35,10 @@ function CallAlert({ callRef, callData, endCallRef }) {
   };
 
   const acceptcall = () => {
+    console.log("JIJIJIJIJIJIJIJ");
+    dipatch(setVideoCallidAction(callData.callid))
+
+    navigate("/video-call")
     acceptCall(callData.callid).then((data)=>{
       
     })

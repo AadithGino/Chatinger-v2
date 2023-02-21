@@ -9,6 +9,7 @@ router.route("/login").post(adminLoginController.adminLogin)
 
 router.route("/find-user").get(adminhomecontroller.findUser)
 
+router.route("/get-all-user").get(adminhomecontroller.getAllusers)
 
 router.route("/block-user").get(adminhomecontroller.blockUser)
 

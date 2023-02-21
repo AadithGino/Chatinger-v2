@@ -73,6 +73,7 @@ exports.Login = async (req, res) => {
   try {
     USERSCHEMA.findOne({ number: req.body.number }).then((result) => {
       if (result) {
+       if(result.status){
         bcrypt.compare(
           req.body.password,
           result.password,
@@ -93,6 +94,9 @@ exports.Login = async (req, res) => {
             }
           }
         );
+       }else{
+        res.status(400).json("Account Is Temporarly Suspended")
+       }
       } else {
         res.status(401).json("USER NOT REGISTERED");
       }

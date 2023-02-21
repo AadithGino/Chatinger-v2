@@ -1,0 +1,12 @@
+.containderusers{
+    display: flex;
+}
+.allusers{
+    flex: 5;
+    border-top: black 1px solid;
+    border-right: black 1px solid;
+}
+.onlineusers{
+    flex: 5;
+    border-top: black 1px solid;
+}
