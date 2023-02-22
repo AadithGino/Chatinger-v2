@@ -31,6 +31,9 @@ router.post("/group-add",groupController.AddGroupMembers)
 //change group name 
 router.post("/group-change-name",groupController.editGroupName)
 
+// archive
+router.route("/archive").post(chatController.archiveChat)
+
 
 
 module.exports = router;

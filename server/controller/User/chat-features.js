@@ -19,13 +19,13 @@ exports.CreateChat = async (req, res) => {
           });
         }
       });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 exports.GetChats = async (req, res) => {
   try {
     let id = req.query.id;
-    
+
     ``;
 
     chatSchema
@@ -34,7 +34,7 @@ exports.GetChats = async (req, res) => {
       .then((data) => {
         res.status(200).json(data);
       });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 exports.sendMessage = async (req, res) => {
@@ -51,7 +51,7 @@ exports.sendMessage = async (req, res) => {
         content: req.body.image,
         sender: req.body.id,
         time: Date.now(),
-        token:req.body.token
+        token: req.body.token
       };
     } else {
       details = {
@@ -60,7 +60,7 @@ exports.sendMessage = async (req, res) => {
         content: message,
         sender: req.body.id,
         time: Date.now(),
-        token:req.body.token
+        token: req.body.token
       };
     }
     chatSchema
@@ -76,7 +76,7 @@ exports.sendMessage = async (req, res) => {
       .catch((err) => {
         console.log(err);
       });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 exports.getMessages = async (req, res) => {
@@ -87,5 +87,37 @@ exports.getMessages = async (req, res) => {
       res.status(200).json(data.messages);
       // console.log(data.messages);
     });
-  } catch (error) {}
+  } catch (error) { }
 };
+
+// Archive
+exports.archiveChat = async (req, res) => {
+  console.log(req.body);
+  let id = req.body.id;
+  let user = req.body.user;
+  try {
+
+
+    chatSchema.findOne({ _id: id }).then((data) => {
+      let contains = false
+
+
+      for (let i = 0; i < data.archive.length; i++) {
+        if (data.archive[i] == user) {
+          contains = true
+        }
+      }
+      if (contains) {
+        chatSchema.updateOne({ _id: id }, { $pull: { archive: user } }).then((data) => {
+          res.status(200).json(data)
+        })
+      } else {
+        chatSchema.updateOne({ _id: id }, { $push: { archive: user } }).then((data) => {
+          res.status(200).json(data)
+        })
+      }
+    })
+  } catch (error) {
+
+  }
+}
