@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const userhome = require("../../controller/User/home-features-controller");
 const userNotification = require("../../controller/User/notificationController")
-
+const upload = require('../../multer');
+const cloudinary = require("../../cloudinary")
 
 // search 
 router.post("/search", userhome.SearchUser)
@@ -14,7 +15,7 @@ router.route("/find-user").get(userhome.findUserDetails)
 router.route("/change-name").post(userhome.UpdateName)
 
 //update Profile Pic 
-router.route("/change-photo").post(userhome.updateProfilePic)
+router.route("/change-photo",upload.array("image")).post(userhome.updateProfilePic)
 
 //home 
 router.route("/").post(userhome.Home)

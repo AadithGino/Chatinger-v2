@@ -127,3 +127,8 @@ hr{
     height: 250;
     width: 250px;
   }
+  .send-image{
+    width: 30px;
+    height: 30px;
+    margin-right: 35px;
+  }

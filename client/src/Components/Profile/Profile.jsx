@@ -48,7 +48,7 @@ function Profile() {
     setImageLoading(true);
     console.log(image);
     const data = new FormData();
-    data.append("file", image);
+    data.append("file", e);
     data.append("upload_preset", "noteapp");
     data.append("cloud_name", "dhajqatgt");
     fetch("https://api.cloudinary.com/v1_1/dhajqatgt/image/upload", {
@@ -57,6 +57,7 @@ function Profile() {
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         changeProfileImage(userdata._id, data.url).then((result) => {
           console.log(result.data);
           dispatch(updateUserData(result.data));

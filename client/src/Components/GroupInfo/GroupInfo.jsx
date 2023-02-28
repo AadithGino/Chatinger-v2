@@ -152,6 +152,7 @@ const GroupInfo = ({ members, chat, currentuser }) => {
               ""
             )}
             <Button onClick={onClose}>Cancel</Button>
+            <Button colorScheme="red" ml={3}>Leave</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
