@@ -1,50 +1,79 @@
-
- .message {
+.message {
     display: flex;
     flex-direction: column;
-    margin-top: 20px;
-  }
-  
-  .messageTop{
-      display: flex;
-  }
-  
-  .messageImg {
+    margin-top: 10px;
+}
+
+.messageTop {
+    display: flex;
+}
+
+.messageImg {
     width: 32px;
     height: 32px;
     border-radius: 50%;
     object-fit: cover;
     margin-right: 10px;
-  }
-  
-  .messageText{
-      padding: 10px;
-      border-radius: 20px;
-      background-color: #ffff;
-      color: black;
-      max-width: 300px;
-      min-width: 100px;
-  }
-  
-  .messageBottom{
-      font-size: 12px;
-      margin-top: 10px;
-  }
-  
-  .message.own{
-      align-items: flex-end;
-  }
-  
-  .message.own .messageText{
-      background-color: rgb(217, 253, 211);
-      color: black;
-  }
+}
 
-.message-time{
+.messageText {
+    margin-left: 43px;
+    padding: 5px;
+    border-radius: 20px;
+    background-color: #ffff;
+    color: black;
+    max-width: 300px;
+    min-width: 150px;
+    padding: 10px;
+    position: relative;
+    /* background-color: #888; */
+}
+
+.messageTextother{
+    margin-left: 10px;
+    padding: 5px;
+    border-radius: 20px;
+    background-color: #ffff;
+    color: black;
+    max-width: 300px;
+    min-width: 150px;
+    padding: 10px;
+    position: relative;
+}
+
+.messageTextother:before {
+    content: "";
+    position: absolute;
+    border-right: 15px solid #ffff;
+    border-left: 15px solid transparent;
+    border-top: 15px solid #ffff;
+    border-bottom: 15px solid transparent;
+    left: -10px;
+    top: 0px;
+}
+
+.messageBottom {
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.message.own {
+    align-items: flex-end;
+}
+
+.message.own .messageText {
+    background-color: rgb(217, 253, 211);
+    color: black;
+}
+
+.message-time {
     font-size: 9px;
     align-items: flex-end;
 }
-.chat-img{
+
+.chat-img {
+    margin-left: 10px;
+    border-radius: 10px;
     width: 300px;
     height: 200px;
 }

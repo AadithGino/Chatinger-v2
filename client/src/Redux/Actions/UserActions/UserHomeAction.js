@@ -9,7 +9,7 @@ import {
   USER_HOME_REQUEST,
   USER_HOME_SUCCESS,
 } from "../../Constants/userConstants";
-import { SET_VIDEO_CALL_ID } from "../../Constants/videoCallConstant";
+import { REMOVE_VIDEO_CALL_ID, SET_VIDEO_CALL_ID } from "../../Constants/videoCallConstant";
 const baseUrl = "http://localhost:5000";
 
 export const userHome = () => async (dispatch) => {
@@ -41,7 +41,7 @@ export const findUserDetailsAction = (id) => async (dispatch) => {
   try {
     dispatch({ type: FIND_USER_REQUEST });
     const { data } = await axios.get(
-      "http://localhost:5000/find-user?id=" + id
+      "http://localhost:5000/find-user?id=" + id 
     );
 
     dispatch({ type: FIND_USER_SUCCESS, payload: data });
@@ -64,4 +64,8 @@ export const setCurrentChat = (chat) =>async(dispatch)=>{
 export const setVideoCallidAction = (data) =>async(dispatch)=>{
   dispatch({type:SET_VIDEO_CALL_ID,payload:data})
   console.log("KOOOI");
+}
+
+export const removeVideoIdAction = (data) => async(dispatch)=>{
+  dispatch({type:REMOVE_VIDEO_CALL_ID})
 }

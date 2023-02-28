@@ -36,9 +36,9 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", usersLogin_SignupRouter);
 app.use("/", userHomeRoutes);
 app.use("/chat", userChatRoutes);
-app.use("/status",userStatusRoutes);
-app.use("/call",userCallRoutes);
-app.use("/admin",adminRoutes)
+app.use("/status", userStatusRoutes);
+app.use("/call", userCallRoutes);
+app.use("/admin", adminRoutes)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -55,6 +55,15 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   // res.render('error');
 });
+
+let arr = [1, 1, 1, 1,];
+
+console.log(arr.reduce((acc, cu) => {
+  return acc + cu
+})
+);
+
+
 
 app.listen(5000, () => {
   console.log(5000);

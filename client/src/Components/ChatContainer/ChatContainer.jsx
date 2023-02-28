@@ -1,4 +1,5 @@
 import React from "react";
+import addnotification from 'react-push-notification';
 import { useEffect } from "react";
 import { useRef } from "react";
 import { useState } from "react";
@@ -9,6 +10,8 @@ import Chatbox from "../ChatBox/Chatbox";
 import "./ChatContainer.css";
 import sound from "../../public/Messagenotification.mp3";
 import sound2 from "../../public/currentchatnotification.mp3";
+import ReactAudioPlayer from 'react-audio-player';
+
 import {
   addNotification,
   createCall,
@@ -44,6 +47,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
   const [messageloading, setmessageloading] = useState(false);
   const [message, setMessage] = useState("");
   const [file, setFile] = useState(false);
+  const [pdf, setPdf] = useState(false);
   const [socketsendMessage, setsocketsendMessage] = useState(null);
   const [imageuploadloading, setimageuploadloading] = useState(false);
   const [members, setMembers] = useState();
@@ -87,38 +91,6 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
     }
   }, [socketsendMessage]);
 
-  // TO RECIEVE MESSAGE FROM SOCKET IO WHICH IS PASSED FROM HOME COMPONENT
-
-  useEffect(() => {
-    console.log(receiveMessage);
-    if (receiveMessage.socketsendMessage) {
-      if (
-        chat._id === receiveMessage.socketsendMessage.data[0].chatid &&
-        userdata._id != receiveMessage.socketsendMessage.data[0].sender
-      ) {
-        dispatch(updateMessagesAction(receiveMessage.socketsendMessage.data));
-        dispatch(userHome());
-        new Audio(sound2).play();
-        scrollRef.current.scrollIntoView();
-      }
-
-      if (chat._id !== receiveMessage.socketsendMessage.data[0].chatid) {
-        let contains = receiveMessage.members.find((user) => user === userdata._id);
-        console.log(contains);
-        if (contains) {
-
-          let noticontains = notification.find((data) => data[0].chatid === receiveMessage.socketsendMessage.data[0].chatid)
-
-          if (!noticontains) {
-            setNotification([receiveMessage.socketsendMessage.data, ...notification])
-            addNotification(userdata._id, [receiveMessage.socketsendMessage.data])
-            console.log(receiveMessage.socketsendMessage.data);
-          }
-          new Audio(sound).play();
-        }
-      }
-    }
-  }, [receiveMessage]);
 
   const handleSendMessage = async () => {
     if (file) {
@@ -189,6 +161,53 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
     };
     fetchuserDetails();
   }, [chat]);
+
+
+
+  // TO RECIEVE MESSAGE FROM SOCKET IO WHICH IS PASSED FROM HOME COMPONENT
+
+  useEffect(() => {
+    console.log(receiveMessage);
+    if (receiveMessage.socketsendMessage) {
+      if (
+        chat._id === receiveMessage.socketsendMessage.data[0].chatid &&
+        userdata._id != receiveMessage.socketsendMessage.data[0].sender
+      ) {
+        dispatch(updateMessagesAction(receiveMessage.socketsendMessage.data));
+        dispatch(userHome());
+        new Audio(sound2).play();
+
+        window.onblur = () => {
+          addnotification({
+            title: "A new message from",
+            subtitle: chat.isGroupChat ? chat.chatName : userData ? userData.fullname : '',
+            message: chat.isGroupChat ? chat.chatName : userData ? userData.fullname : '',
+            theme: 'darkblue',
+            native: true // when using native, your OS will handle theming.
+          });
+        }
+
+        scrollRef.current.scrollIntoView();
+      }
+
+      if (chat._id !== receiveMessage.socketsendMessage.data[0].chatid) {
+        let contains = receiveMessage.members.find((user) => user === userdata._id);
+        console.log(contains);
+        if (contains) {
+
+          let noticontains = notification.find((data) => data[0].chatid === receiveMessage.socketsendMessage.data[0].chatid)
+
+          if (!noticontains) {
+            setNotification([receiveMessage.socketsendMessage.data, ...notification])
+            addNotification(userdata._id, [receiveMessage.socketsendMessage.data])
+            console.log(receiveMessage.socketsendMessage.data);
+          }
+          new Audio(sound).play();
+        }
+      }
+    }
+  }, [receiveMessage]);
+
 
   // TO SEND MESSAGE WHILE ENTER
 
@@ -331,11 +350,23 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
           {messageLoading ? (
             <ChatLoading />
           ) : messages ? (
-            messages.map((m) => {
+            messages.map((m,i) => {
               let own = false;
+              let profile = false;
               if (m[0].sender == userdata._id) {
                 own = "own";
               }
+             if(i>1){
+            //   console.log("I IS LESS THAN KETO haha");
+              if(m[0].sender != messages[i-1][0].sender && m[0].sender!=userdata._id ){
+                
+                profile=true
+              }
+             }
+          console.log(messages[i+1]);
+          console.log("I IS LESS THAN KETO haha");
+            
+
               return (
                 <>
                   <div ref={scrollRef}>
@@ -345,6 +376,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
                       own={own}
                       otheruser={userData}
                       message={m[0]}
+                      profile={profile}
                     />
                   </div>
                 </>
@@ -358,7 +390,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
             <div className="image-preview">
               {/* <span  style={{marginLeft:"60%",cursor:"pointer"}}>X</span> */}
               <button
-                onClick={() => setFile("")}
+                onClick={() => setFile()}
                 style={{ marginLeft: "60%", cursor: "pointer" }}
               >
                 X
@@ -372,89 +404,92 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
           ) : (
             ""
           )}
+
           {isTyping ? <p>Typing...</p> : ''}
         </div>
 
         <div className="chatBoxBottom">
+          {/* <audio style={{height:"50px"}} controls autoPlay src="./Ye-Bhagwa-Rang-DJ.mp3"></audio> */}
+          <audio  src="./Ye-Bhagwa-Rang-DJ.mp3" controls autoPlay/>
+              <input
+                ref={imageinputref}
+                onChange={(e) => {
+                  setFile(e.target.files[0]);
+                  console.log(e.target.files[0]);
+                  setPreview(URL.createObjectURL(e.target.files[0]));
+                }}
+                type="file"
+                className="image-upload"
+              />
 
-          <input
-            ref={imageinputref}
-            onChange={(e) => {
-              setFile(e.target.files[0]);
-              setPreview(URL.createObjectURL(e.target.files[0]));
-            }}
-            type="file"
-            className="image-upload"
-          />
+              <i
+                id="file-icon"
+                onClick={() => handleimageinput()}
+                class="fa-solid fa-paperclip"
+              ></i>
+              <textarea
+                onKeyPress={(e) => {
+                  handleEnterKey(e.key);
+                }}
+                value={message}
+                className="chatMessageInput"
+                placeholder="write something..."
+                onChange={(e) => {
+                  setMessage(e.target.value);
+                  setFile(false);
 
-          <i
-            id="file-icon"
-            onClick={() => handleimageinput()}
-            class="fa-solid fa-paperclip"
-          ></i>
-          <textarea
-            onKeyPress={(e) => {
-              handleEnterKey(e.key);
-            }}
-            value={message}
-            className="chatMessageInput"
-            placeholder="write something..."
-            onChange={(e) => {
-              setMessage(e.target.value);
-              setFile(false);
+                  if (!typing) {
 
-              if (!typing) {
+                    setTyping(true)
+                    let data = {
+                      id: userdata._id,
+                      chatid: chat._id
+                    }
+                    socket.current = io("http://localhost:8800");
+                    socket.current.emit('Typing', data)
+                  }
 
-                setTyping(true)
-                let data = {
-                  id: userdata._id,
-                  chatid: chat._id
-                }
-                socket.current = io("http://localhost:8800");
-                socket.current.emit('Typing', data)
-              }
+                  let lastTypingTime = new Date().getTime();
+                  let timerLength = 3000;
 
-              let lastTypingTime = new Date().getTime();
-              let timerLength = 3000;
-
-              setTimeout(() => {
-                setTyping(false)
-                console.log("STOP TYPING");
-                let timeNow = new Date().getTime();
-                let timeDifference = timeNow - lastTypingTime;
-                let data = {
-                  id: userdata._id,
-                  chatid: chat._id
-                }
-                if (timeDifference >= timerLength && typing) {
-                  socket.current = io("http://localhost:8800");
-                  socket.current.emit("stopTyping", data)
-                }
-              }, timerLength);
-            }}
-          ></textarea>
-          {message.length == 0 && !file ? (
-            <button disabled className="chatSubmitButton" type="button">
-              Send
-            </button>
-          ) : imageuploadloading ? (
-            <button d className="chatSubmitButton">
-              Image is uploading
-            </button>
-          ) : (
-            <button
-              onClick={(e) => {
-                handleSendMessage(e);
-              }}
-              className="chatSubmitButton"
-            >
-              Send
-            </button>
-          )}
+                  setTimeout(() => {
+                    setTyping(false)
+                    console.log("STOP TYPING");
+                    let timeNow = new Date().getTime();
+                    let timeDifference = timeNow - lastTypingTime;
+                    let data = {
+                      id: userdata._id,
+                      chatid: chat._id
+                    }
+                    if (timeDifference >= timerLength && typing) {
+                      socket.current = io("http://localhost:8800");
+                      socket.current.emit("stopTyping", data)
+                    }
+                  }, timerLength);
+                }}
+              ></textarea>
+              {message.length == 0 && !file ? (
+                <button disabled className="chatSubmitButton" type="button">
+                  Send
+                </button>
+              ) : imageuploadloading ? (
+                <button d className="chatSubmitButton">
+                  Image is uploading
+                </button>
+              ) : (
+                <button
+                  onClick={(e) => {
+                    handleSendMessage(e);
+                  }}
+                  className="chatSubmitButton"
+                >
+                  Send
+                </button>
+              )}
+            </div>
         </div>
       </div>
-    </div>
-  );
+      );
 }
 
-export default ChatContainer;
+      export default ChatContainer;

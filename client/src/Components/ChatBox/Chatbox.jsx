@@ -3,7 +3,7 @@ import "./Chatbox.css";
 import { format } from "timeago.js";
 import { useSelector } from "react-redux";
 import { Avatar, Tooltip } from "@chakra-ui/react";
-function Chatbox({ own, message, otheruser, groupMembers, chat }) {
+function Chatbox({ own, message, otheruser, groupMembers, chat,profile }) {
   console.log(message);
   const userdata = useSelector((state) => state.loginReducer.userdata);
   let msgboxstyle = "message";
@@ -29,13 +29,13 @@ function Chatbox({ own, message, otheruser, groupMembers, chat }) {
                 groupMembers.map((m) => {
                   if (m.user[0]._id == message.sender) {
                     return (
-                      <Tooltip label={m.user[0].fullname} aria-label='A tooltip' hasArrow arrowSize={15}>
-                        <Avatar
-                        size="sm"
-                        name={m.user[0].fullname}
-                        src={m.user[0].photo}
-                      />
-                      </Tooltip>
+                     profile? <Tooltip label={m.user[0].fullname} aria-label='A tooltip' hasArrow arrowSize={15}>
+                     <Avatar
+                     size="sm"
+                     name={m.user[0].fullname}
+                     src={m.user[0].photo}
+                   />
+                   </Tooltip>:''
                       
                     );
                   }
@@ -44,18 +44,18 @@ function Chatbox({ own, message, otheruser, groupMembers, chat }) {
                 ""
               )
             ) : (
-              <Avatar
-                size="sm"
-                name={otheruser ? otheruser.firstname : ""}
-                src={otheruser ? otheruser.photo : ""}
-              />
+              profile?<Avatar
+              size="sm"
+              name={otheruser ? otheruser.firstname : ""}
+              src={otheruser ? otheruser.photo : ""}
+            />:''
             )}
           </>
         )}
         {message.isFile ? (
           <img className="chat-img" src={message.content} alt="" />
         ) : (
-          <div className="messageText">
+          <div className={profile?"messageTextother":"messageText"}>
             <p>{message.content}</p>{" "}
             <p className="message-time">{format(message.time)}</p>
           </div>

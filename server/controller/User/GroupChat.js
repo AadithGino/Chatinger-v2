@@ -22,7 +22,7 @@ exports.createGroupChat = async (req, res) => {
         res.status(201).json(data);
       });
     }
-  } catch (error) {}
+  } catch (error) { }
 };
 
 // getting group members details
@@ -70,18 +70,18 @@ exports.RemoveGroupMembers = async (req, res) => {
     let chatid = req.body.chatid;
     let userid = req.body.id;
     console.log(userid);
-   chatSchema.findOne({_id:chatid}).then((data)=>{
-    console.log(data.groupAdmin+"THIS IS THE ADMIB");
-    if(data.groupAdmin===userid){
-      res.status(400).json("Cannot Remove The Admin")
-    }else{
-      chatSchema.updateOne({_id:chatid},{$pull:{members:ObjectId(userid)}}).then((data)=>{
-        chatSchema.findOne({_id:chatid}).then((data)=>{
-          res.status(200).json(data)
-         })
-      })
-    }
-   })
+    chatSchema.findOne({ _id: chatid }).then((data) => {
+      console.log(data.groupAdmin + "THIS IS THE ADMIB");
+      if (data.groupAdmin === userid) {
+        res.status(400).json("Cannot Remove The Admin")
+      } else {
+        chatSchema.updateOne({ _id: chatid }, { $pull: { members: ObjectId(userid) } }).then((data) => {
+          chatSchema.findOne({ _id: chatid }).then((data) => {
+            res.status(200).json(data)
+          })
+        })
+      }
+    })
 
   } catch (error) {
 
@@ -90,34 +90,34 @@ exports.RemoveGroupMembers = async (req, res) => {
 
 // add Members 
 
-exports.AddGroupMembers = async (req,res)=>{
-    try {
-        let chatid = req.body.chatid;
-        let userid  = req.body.userid;
-        chatSchema.updateOne({_id:chatid},{$push:{members:[ObjectId(userid)]}}).then((data)=>{
-            console.log(data);
-           chatSchema.findOne({_id:chatid}).then((data)=>{
-            res.status(200).json(data)
-           })
-        })
-    } catch (error) {
-        
-    }
+exports.AddGroupMembers = async (req, res) => {
+  try {
+    let chatid = req.body.chatid;
+    let userid = req.body.userid;
+    chatSchema.updateOne({ _id: chatid }, { $push: { members: [ObjectId(userid)] } }).then((data) => {
+      console.log(data);
+      chatSchema.findOne({ _id: chatid }).then((data) => {   
+        res.status(200).json(data)
+      })
+    })
+  } catch (error) {
+
+  }
 }
 
 // edit group name 
 
-exports.editGroupName = async(req,res)=>{
-    let chatid = req.body.chatid;
-    let name  = req.body.name;
-    try {
-        chatSchema.updateOne({_id:chatid},{$set:{chatName:name}}).then((data)=>{
-            console.log(data);
-            chatSchema.findOne({_id:chatid}).then((data)=>{
-              res.status(200).json(data)
-             })
-        })
-    } catch (error) {
-        
-    }
+exports.editGroupName = async (req, res) => {
+  let chatid = req.body.chatid;
+  let name = req.body.name;
+  try {
+    chatSchema.updateOne({ _id: chatid }, { $set: { chatName: name } }).then((data) => {
+      console.log(data);
+      chatSchema.findOne({ _id: chatid }).then((data) => {
+        res.status(200).json(data)
+      })
+    })
+  } catch (error) {
+
+  }
 }
