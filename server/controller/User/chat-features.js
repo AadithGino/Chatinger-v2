@@ -121,3 +121,28 @@ exports.archiveChat = async (req, res) => {
 
   }
 }
+
+
+
+// blocking / unblocking the user 
+
+exports.blockUser = async (req, res) => {
+  console.log("PODA PODA");  
+  const { id, chatid } = req.body;
+  try {
+    chatSchema.findOne({_id:chatid}).then((result)=>{
+      let blocked = result.block.filter((m)=>m==id)
+      if(blocked.length ==0 ){
+        chatSchema.updateOne({_id:chatid},{$push:{block:id}}).then((data)=>{
+          res.status(200).json(data)
+        })
+      }else{
+        chatSchema.updateOne({_id:chatid},{$pull:{block:id}}).then((data)=>{
+          res.status(200).json(data)
+        })
+      }
+    })
+  } catch (error) {
+    
+  }
+}

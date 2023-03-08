@@ -12,6 +12,8 @@ function UserList(props) {
   const dispatch = useDispatch();
   const [userDetails, setuserdetails] = useState("");
   const userdetails = useSelector((state) => state.findUser);
+ 
+  let blocked = false;
   const id = props.details.members.find((m) => m !== userdata._id);
   console.log(props.notification);
   console.log(props.details._id);
@@ -23,6 +25,12 @@ function UserList(props) {
     console.log(data);
   };
   useEffect(() => {
+    if(props.details.block.length==2){
+      blocked=true;
+    }
+    if(props.details.block[0]!=userdata._id){
+      blocked=true;
+    }
     fetchuserdata();
   }, []);
 
@@ -44,7 +52,9 @@ function UserList(props) {
                   src={
                     props.details.isGroupChat
                       ? props.details.chatName
-                      : userDetails
+                      :props.details.block.length > 0?props.details.block.length>1?'':props.details.block[0]==userdata._id? userDetails
+                      ? userDetails.photo
+                      : "":'': userDetails
                       ? userDetails.photo
                       : ""
                   }

@@ -3,8 +3,7 @@ import "./Chatbox.css";
 import { format } from "timeago.js";
 import { useSelector } from "react-redux";
 import { Avatar, Tooltip } from "@chakra-ui/react";
-function Chatbox({ own, message, otheruser, groupMembers, chat,profile }) {
-  console.log(message);
+function Chatbox({ own, message, otheruser, groupMembers, chat,profile,block }) {
   const userdata = useSelector((state) => state.loginReducer.userdata);
   let msgboxstyle = "message";
   let msgtxtstyle = "message-Txt";
@@ -16,7 +15,7 @@ function Chatbox({ own, message, otheruser, groupMembers, chat,profile }) {
     userimgstyle = "chatbox-user-img-own";
     timetxtstyle = "chatbox-bottom-time-own";
   }
-
+console.log(block+"TIS IS THE BLOCK CONDTION");
   return (
     <div className={own ? "message own" : "message"}>
       <div className="messageTop">
@@ -33,7 +32,7 @@ function Chatbox({ own, message, otheruser, groupMembers, chat,profile }) {
                      <Avatar
                      size="sm"
                      name={m.user[0].fullname}
-                     src={m.user[0].photo}
+                     src={block?'':m.user[0].photo}
                    />
                    </Tooltip>:''
                       
@@ -47,7 +46,7 @@ function Chatbox({ own, message, otheruser, groupMembers, chat,profile }) {
               profile?<Avatar
               size="sm"
               name={otheruser ? otheruser.firstname : ""}
-              src={otheruser ? otheruser.photo : ""}
+              src={block?'':otheruser ? otheruser.photo : ''}
             />:''
             )}
           </>

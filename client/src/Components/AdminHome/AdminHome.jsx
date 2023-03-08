@@ -7,34 +7,40 @@ import AdminUserList from '../AdminUserList/AdminUserList';
 import './AdminHome.css'
 
 function AdminHome() {
-    
-    
-    
-    let socket = useRef();
-    const [onlineUsers, setOnlineUsers] = useState();
-    const [users, setUsers] = useState([]);
-    const [blockUser, setBlockUser] = useState();
+    // useEffect(()=>{
+    //     pref.current = pref1.current
+    // })
+    const pref = useRef()
+ 
+    // const onClick = ()=>{
+    //     pref.current = 'poda'
+    // //     console.log(pref.current);
+    // // }
+    // let socket = useRef();
+    // const [onlineUsers, setOnlineUsers] = useState();
+    // const [users, setUsers] = useState([]);
+    // const [blockUser, setBlockUser] = useState();
 
-    socket.current = io("http://localhost:8800");
-    socket.current.on("get-users", (users) => {
-        console.log(users);
-        setOnlineUsers(users)
-    });
+    // socket.current = io("http://localhost:8800");
+    // socket.current.on("get-users", (users) => {
+    //     console.log(users);
+    //     setOnlineUsers(users)
+    // });
 
-    useEffect(() => {
-        console.log(blockUser);
-        adminGetAllUsers().then((data) => {
-            setUsers(data.data)
-            console.log(users);
-            console.log("hi");
-        })
-    }, [blockUser])
+    // useEffect(() => {
+    //     console.log(blockUser);
+    //     adminGetAllUsers().then((data) => {
+    //         setUsers(data.data)
+    //         console.log(users);
+    //         console.log("hi");
+    //     })
+    // }, [blockUser])
 
 
 
     return (
         <div>
-           <div className="details">
+            {/* <div className="details">
            <h2>Number of online users {onlineUsers ? onlineUsers.length : 0}</h2>
             <h2>Number of total users {users ? users.length : ''}</h2>
            </div>
@@ -62,7 +68,16 @@ function AdminHome() {
                     }):''
                 }
             </div>
-           </div>
+           </div> */}
+      <input style={{border:"1px solid black"}} type="text" name="" id="" />
+      <p ref={pref}>hey</p>
+       <button onClick={(e)=>{
+        console.log(pref);
+        pref.current.innerText = "ppppp"
+       }}>click me </button>
+        
+
+    
         </div>
     )
 }

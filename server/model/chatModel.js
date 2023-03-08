@@ -8,6 +8,7 @@ const chatSChema = mongoose.Schema(
     calls:[],
     latestMessage: {},
     archive:[],
+    block:[],
     messages : [],
     groupAdmin: {
       type: mongoose.Schema.Types.ObjectId,

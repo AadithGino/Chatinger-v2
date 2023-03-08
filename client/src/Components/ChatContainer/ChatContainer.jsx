@@ -31,6 +31,7 @@ import {
   updateMessagesAction,
 } from "../../Redux/Actions/UserActions/UserChatActions";
 import { useNavigate } from "react-router-dom";
+import OtherUserProfile from "../OtherUserProfile/OtherUserProfile";
 
 
 function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification, notification, setIsTypingHome }) {
@@ -54,7 +55,9 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
   const [preview, setPreview] = useState("");
   const onlineUser = useSelector((state) => state.onlineUserReducer.users);
   const [online, setOnline] = useState(false);
-  let chatingUser = false;
+  const [Block,setBlock]=useState()
+  let blocked = false;
+  let block = false;
 
 
   useEffect(() => {
@@ -67,7 +70,22 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
     } else {
       setOnline(false)
     }
-  }, [chat, onlineUser])
+    if (chat.block.length != 0) {
+      if (chat.block.lenght == 2) {
+        blocked = true;
+        block = true
+      }
+
+      if (chat.block[0] == recieverid) {
+        blocked = true;
+      } else {
+        block = false;
+      }
+    }
+    console.log(chat.block);
+    console.log(blocked);
+    console.log("BLOCKEDD");
+  }, [chat, onlineUser,Block])
 
   const scrollRef = useRef();
   const imageinputref = useRef(null);
@@ -160,7 +178,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
       }
     };
     fetchuserDetails();
-  }, [chat]);
+  }, [chat,Block]);
 
 
 
@@ -178,13 +196,13 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
         new Audio(sound2).play();
 
 
-        addnotification({
-          title: `A new message from ${chat.isGroupChat ? chat.chatName : userData ? userData.fullname : ''}`,
-          subtitle: chat.isGroupChat ? chat.chatName : userData ? userData.fullname : '',
-          message: "receiveMessage.socketsendMessage.data.content",
-          theme: 'darkblue',
-          native: true // when using native, your OS will handle theming.
-        });
+        // addnotification({
+        //   title: `A new message from ${chat.isGroupChat ? chat.chatName : userData ? userData.fullname : ''}`,
+        //   subtitle: chat.isGroupChat ? chat.chatName : userData ? userData.fullname : '',
+        //   message: '',
+        //   theme: 'darkblue',
+        //   native: true // when using native, your OS will handle theming.
+        // });
         console.log(receiveMessage.socketsendMessage.data);
         // }
 
@@ -266,10 +284,13 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
         userdata,
         callid: data.data._id,
       };
-      dispatch(setVideoCallidAction(data.data._id))
+     
       navigate("/video-call")
 
-      socket.current.emit("video-call", details);
+      if(chat.block.length < 1){
+        dispatch(setVideoCallidAction(data.data._id))
+        socket.current.emit("video-call", details);
+      }
       outGoingCallRef.current.click();
     });
 
@@ -282,18 +303,8 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
     <div>
       <div className="ChatBox-container">
         <div className="chat-header">
-          <Avatar
-            style={{ margin: "0" }}
-            size={"md"}
-            name={
-              chat.isGroupChat
-                ? chat.chatName
-                : userData
-                  ? userData.fullname
-                  : ""
-            }
-            src={chat.isGroupChat ? chat.photo : userData ? userData.photo : ""}
-          />
+          
+          <OtherUserProfile chat={chat} userData={userData} recieverid={recieverid} setBlock={setBlock} />
 
           <div style={{ display: 'flex', flexDirection: "column" }}>
             <h3 className="user-name">
@@ -303,6 +314,9 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
                   ? userData.fullname
                   : ""}
             </h3>
+            {
+              chat.block.length != 0 ? chat.block.length > 1? <h2 style={{ color: "black" }}>You have blocked this contact</h2> :chat.block[0] == recieverid ? <h2 style={{ color: "black" }}>You are blocked</h2> : <h2 style={{ color: "black" }}>You have blocked this contact</h2> : ''
+            }
 
             {
 
@@ -342,7 +356,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
                 className="fa-solid fa-video video-call-icon"
               ></i>
             )
-            // <button style={{backgroundColor:"black"}} >call</button>
+            
           }
         </div>
 
@@ -354,11 +368,12 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
             messages.map((m, i) => {
               let own = false;
               let profile = false;
+              let block = false;
               if (m[0].sender == userdata._id) {
                 own = "own";
               }
               if (i > 1) {
-                //   console.log("I IS LESS THAN KETO haha");
+               
                 if (m[0].sender != messages[i - 1][0].sender && m[0].sender != userdata._id) {
 
                   profile = true
@@ -367,10 +382,12 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
               if (i < 1) {
                 profile = true
               }
-              console.log(messages[i + 1]);
-              console.log("I IS LESS THAN KETO haha");
-
-
+              if(chat.block.length > 0){
+                console.log();
+                if(chat.block[0]==recieverid || chat.block.length > 1){
+                  block = true;
+                }
+              }
               return (
                 <>
                   <div ref={scrollRef}>
@@ -381,6 +398,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
                       otheruser={userData}
                       message={m[0]}
                       profile={profile}
+                      block = {block}
                     />
                   </div>
                 </>
@@ -409,11 +427,88 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
             ""
           )}
 
-          {isTyping ? <p>Typing...</p> : ''}
+
         </div>
 
         <div className="chatBoxBottom">
-          {/* <audio style={{height:"50px"}} controls autoPlay src="./Ye-Bhagwa-Rang-DJ.mp3"></audio> */}
+        {
+             chat.block.length != 0 ? chat.block.length > 1? <h2 style={{ color: "black" }}>You have blocked this contact</h2> :chat.block[0] == recieverid ? <>
+             {/* <audio style={{height:"50px"}} controls autoPlay src="./Ye-Bhagwa-Rang-DJ.mp3"></audio> */}
+             <audio src="./Ye-Bhagwa-Rang-DJ.mp3" controls autoPlay />
+             <input
+               ref={imageinputref}
+               onChange={(e) => {
+                 setFile(e.target.files[0]);
+                 console.log(e.target.files[0]);
+                 setPreview(URL.createObjectURL(e.target.files[0]));
+               }}
+               type="file"
+               className="image-upload"
+             />
+   
+             <i
+               id="file-icon"
+               onClick={() => handleimageinput()}
+               class="fa-solid fa-paperclip"
+             ></i>
+             <textarea
+               onKeyPress={(e) => {
+                 handleEnterKey(e.key);
+               }}
+               value={message}
+               className="chatMessageInput"
+               placeholder="write something..."
+               onChange={(e) => {
+                 setMessage(e.target.value);
+                 setFile(false);
+   
+                 if (!typing) {
+   
+                   setTyping(true)
+                   let data = {
+                     id: userdata._id,
+                     chatid: chat._id
+                   }
+                   socket.current = io("http://localhost:8800");
+                   socket.current.emit('Typing', data)
+                 }
+   
+                 let lastTypingTime = new Date().getTime();
+                 let timerLength = 3000;
+   
+                 setTimeout(() => {
+                   setTyping(false)
+                   console.log("STOP TYPING");
+                   let timeNow = new Date().getTime();
+                   let timeDifference = timeNow - lastTypingTime;
+                   let data = {
+                     id: userdata._id,
+                     chatid: chat._id
+                   }
+                   if (timeDifference >= timerLength && typing) {
+                     socket.current = io("http://localhost:8800");
+                     socket.current.emit("stopTyping", data)
+                   }
+                 }, timerLength);
+               }}
+             ></textarea>
+             {message.length == 0 && !file ? (
+               <img onClick={(e) => {
+   
+               }} className="send-image" src="https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/send-icon.png" alt="" />
+             ) : imageuploadloading ? (
+               <button d className="chatSubmitButton">
+                 Image is uploading
+               </button>
+             ) : (
+              
+               <img onClick={(e) => {
+                 handleSendMessage(e);
+               }} className="send-image" src="https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/send-icon.png" alt="" />
+             
+             )}
+            </> : <h2 style={{ color: "black" }}>You have blocked this contact</h2> :  <>
+          
           <audio src="./Ye-Bhagwa-Rang-DJ.mp3" controls autoPlay />
           <input
             ref={imageinputref}
@@ -481,20 +576,17 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
               Image is uploading
             </button>
           ) : (
-            // <button
-            //   onClick={(e) => {
-            //     handleSendMessage(e);
-            //   }}
-            //   className="chatSubmitButton"
-            // >
-            //   Send
-            // </button>
+           
             <img onClick={(e) => {
               handleSendMessage(e);
             }} className="send-image" src="https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/send-icon.png" alt="" />
-            // <i className="fa-solid fa-paper-plane-top"></i>
+          
           )}
+         </>
+          }
+         
         </div>
+       
       </div>
     </div>
   );

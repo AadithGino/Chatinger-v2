@@ -36,3 +36,4 @@ export const adminLogin  = (email,password)=>API.post("/admin/login",{email,pass
 export const adminGetAllUsers = () => API.get("/admin/get-all-user")
 export const adminGetOneUser = (id) => API.get("/admin/find-user?id="+id)
 export const blockUser = (id) => API.get("/admin/block-user?id="+id)
+export const chatblockUser = (id,chatid) => API.post("/chat/block-user",{id,chatid},config)

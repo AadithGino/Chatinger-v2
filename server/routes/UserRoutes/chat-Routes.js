@@ -34,6 +34,8 @@ router.post("/group-change-name",groupController.editGroupName)
 // archive
 router.route("/archive").post(chatController.archiveChat)
 
+// block / unblock user
+router.route("/block-user").post(chatController.blockUser)
 
 
 module.exports = router;
