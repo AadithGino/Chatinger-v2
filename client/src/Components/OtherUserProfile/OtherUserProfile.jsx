@@ -1,5 +1,5 @@
-import React from 'react';
-// import React, { useRef } from "react";
+import React, { useRef } from 'react';
+import { io } from "socket.io-client";
 import {
     Modal,
     ModalOverlay,
@@ -15,17 +15,27 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { chatblockUser } from '../../API/ChatApiCalls';
-import { userHome } from '../../Redux/Actions/UserActions/UserHomeAction';
+import { setCurrentChat, userHome } from '../../Redux/Actions/UserActions/UserHomeAction';
+import Alert from '../Alert/Alert'
 
-function OtherUserProfile({ chat, userData, recieverid,setBlock }) {
+function OtherUserProfile({ chat, userData, recieverid, setBlock }) {
     const dispatch = useDispatch()
+    const socket = useRef()
     const userdata = useSelector((state) => state.loginReducer.userdata)
+    const { loading, error, homedata } = useSelector((state) => state.userHome);
     const { isOpen, onOpen, onClose } = useDisclosure()
     function block() {
+
         chatblockUser(userdata._id, chat._id).then((data) => {
-            dispatch(userHome())
-            setBlock('e')
+            dispatch(userHome());
+            dispatch(setCurrentChat(data.data))
         })
+
+    }
+
+
+    const clearChat = () =>{
+        axios.get("")
     }
     return (
         <>
@@ -87,6 +97,9 @@ function OtherUserProfile({ chat, userData, recieverid,setBlock }) {
                         <Button colorScheme='blue' mr={3} onClick={onClose}>
                             Close
                         </Button>
+                        {
+                           chat.isGroupChat?'':<Alert message="Are you sure to clear chat for both user" action="Clear Chat" />
+                        }
                         {
                             chat.isGroupChat ? '' : <Button onClick={block} colorScheme={chat.block.length != 0 ? chat.block.length > 1 ? 'green' : chat.block[0] == recieverid ? 'red' : 'green' : 'red'}>{
                                 chat.block.length != 0 ? chat.block.length > 1 ? <h2 style={{ color: "black" }}>Unblock</h2> : chat.block[0] == recieverid ? <h2 style={{ color: "black" }}>Block</h2> : <h2 style={{ color: "black" }}>Unblock</h2> : <h2 style={{ color: "black" }}>Block</h2>

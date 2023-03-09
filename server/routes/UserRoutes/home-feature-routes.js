@@ -23,6 +23,9 @@ router.route("/").post(userhome.Home)
 // status
 router.route("/status").post(userhome.userStatus)
 
+// lastSeen 
+router.route("/last-seen").get(userhome.updateLastSeen)
+
 // add notifcation 
 router.route("/add-notification").post(userNotification.addNotification)
 

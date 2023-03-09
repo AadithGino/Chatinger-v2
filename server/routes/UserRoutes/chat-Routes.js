@@ -37,5 +37,8 @@ router.route("/archive").post(chatController.archiveChat)
 // block / unblock user
 router.route("/block-user").post(chatController.blockUser)
 
+//clear chat 
+router.route("/clear-chat").get(chatController.clearChat)
+
 
 module.exports = router;

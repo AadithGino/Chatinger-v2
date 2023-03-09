@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema({
     password:{type:String},
     notification:[],
     photo : {type:String},
-    status:{type:Boolean,default:true}
+    status:{type:Boolean,default:true},
+    lastSeen:{type:String}
 })
 
 const model = mongoose.model('USER',userSchema)

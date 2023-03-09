@@ -2,6 +2,7 @@ const statusSchema = require("../../model/statusModel");
 const userSchema = require("../../model/usermodel");
 const chatSChema = require("../../model/chatModel");
 const generateToken = require("../../JWT/generatetoken");
+const moment = require("moment/moment");
 exports.Home = async (req, res) => {
   try {
     chatSChema
@@ -102,3 +103,16 @@ exports.userStatus = async (req, res) => {
     });
   } catch (error) {}
 };
+
+
+// update last seen 
+exports.updateLastSeen = async(req,res)=>{
+  let id = req.query.id;
+  try {
+    userSchema.updateOne({_id:id},{$set:{lastSeen:moment().format()}}).then((data)=>{
+      res.status(200).json(data)
+    })
+  } catch (error) {
+    
+  }
+}

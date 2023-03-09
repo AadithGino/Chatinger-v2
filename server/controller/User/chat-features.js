@@ -134,13 +134,31 @@ exports.blockUser = async (req, res) => {
       let blocked = result.block.filter((m)=>m==id)
       if(blocked.length ==0 ){
         chatSchema.updateOne({_id:chatid},{$push:{block:id}}).then((data)=>{
-          res.status(200).json(data)
+          chatSchema.findOne({_id:chatid}).then((d)=>{
+            res.status(200).json(d)
+          })
         })
       }else{
         chatSchema.updateOne({_id:chatid},{$pull:{block:id}}).then((data)=>{
-          res.status(200).json(data)
+          chatSchema.findOne({_id:chatid}).then((d)=>{
+            res.status(200).json(d)
+          })
         })
       }
+    })
+  } catch (error) {
+    
+  }
+}
+
+
+// clear chat history 
+
+exports.clearChat = async(req,res)=>{
+  let id = req.query.id;
+  try {
+    chatSchema.updateOne({_id:id},{$set:{messages:[]}}).then((data)=>{
+      res.status(200).json(data)
     })
   } catch (error) {
     

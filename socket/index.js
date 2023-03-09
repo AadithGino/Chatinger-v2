@@ -1,3 +1,5 @@
+const { default: axios } = require("axios");
+
 const io = require("socket.io")(8800, {
   cors: {
     origin: "http://localhost:3000",
@@ -24,8 +26,12 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("DISCONNECGTT");
+    let user = onlineUsers.find((u)=>u.socketId==socket.id)
+    
+    if(user?.userId!=undefined){
+      axios.get("http://localhost:5000/last-seen?id="+user.userId)
+    }
     onlineUsers = onlineUsers.filter((users) => users.socketId !== socket.id);;
-    // console.log(onlineUsers);
     io.emit("get-users", onlineUsers);
   });
 
@@ -76,9 +82,11 @@ io.on("connection", (socket) => {
     io.emit("stoptyping", data)
     console.log("Stop typing");
   })
+
+  socket.on("Block",async(data)=>{
+    console.log("THIS IS BLOCKED CALLLED");
+  })
 });
-
-
 
 
 
