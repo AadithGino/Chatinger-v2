@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react'
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { chatblockUser } from '../../API/ChatApiCalls';
+import { chatblockUser, clearUserChat } from '../../API/ChatApiCalls';
 import { setCurrentChat, userHome } from '../../Redux/Actions/UserActions/UserHomeAction';
 import Alert from '../Alert/Alert'
 
@@ -29,13 +29,27 @@ function OtherUserProfile({ chat, userData, recieverid, setBlock }) {
         chatblockUser(userdata._id, chat._id).then((data) => {
             dispatch(userHome());
             dispatch(setCurrentChat(data.data))
+            socket.current = io("http://localhost:8800");
+            let details = {
+                userid:recieverid,
+                chat:data.data
+            }
+            socket.current.emit("Block",details)
         })
 
     }
 
 
     const clearChat = () =>{
-        axios.get("")
+       clearUserChat(chat._id).then((data)=>{
+        dispatch(setCurrentChat(data.data))
+        socket.current = io("http://localhost:8800");
+        let details = {
+            userid:recieverid,
+            chat:data.data
+        }
+        socket.current.emit("ClearChat",details)
+       })
     }
     return (
         <>
@@ -98,7 +112,7 @@ function OtherUserProfile({ chat, userData, recieverid, setBlock }) {
                             Close
                         </Button>
                         {
-                           chat.isGroupChat?'':<Alert message="Are you sure to clear chat for both user" action="Clear Chat" />
+                           chat.isGroupChat?'':<Alert message="Are you sure to clear chat for both user" action="Clear Chat" functiontobedone={clearChat} />
                         }
                         {
                             chat.isGroupChat ? '' : <Button onClick={block} colorScheme={chat.block.length != 0 ? chat.block.length > 1 ? 'green' : chat.block[0] == recieverid ? 'red' : 'green' : 'red'}>{

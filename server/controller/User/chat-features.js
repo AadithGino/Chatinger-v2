@@ -158,7 +158,9 @@ exports.clearChat = async(req,res)=>{
   let id = req.query.id;
   try {
     chatSchema.updateOne({_id:id},{$set:{messages:[]}}).then((data)=>{
+     chatSchema.findOne({_id:id}).then((data)=>{
       res.status(200).json(data)
+     })
     })
   } catch (error) {
     

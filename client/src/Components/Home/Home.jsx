@@ -40,10 +40,10 @@ function Home() {
     socket.current.on("get-users", (users) => {
       dispatch(setOnlineUsers(users));
     });
-    findUserDetails(userdata?userdata._id:'').then((data)=>{
+    findUserDetails(userdata ? userdata._id : '').then((data) => {
       console.log("NOTIFI BACKEN");
       console.log(data.data.notification.length);
-      if(data.data?.notification.length > 0){
+      if (data.data?.notification.length > 0) {
         console.log(data.data.notification)
         let noti = data.data.notification;
         setNotification(noti)
@@ -59,6 +59,25 @@ function Home() {
         setRecieveMessage(data);
       }
     });
+
+    socket.current.on("block", (data) => {
+      if (data.userid == userdata._id) {
+        dispatch(userHome())
+        // if (chatData._id == data.chat._id) {
+          dispatch(setCurrentChat(data.chat))
+        // }
+      }
+    })
+
+    socket.current.on("clearchat", (data) => {
+      if (data.userid == userdata._id) {
+        dispatch(userHome())
+        // if (chatData._id == data.chat._id) {
+          dispatch(setCurrentChat(data.chat))
+        // }
+      }
+    })
+    
 
     socket.current.on("get-users", (users) => {
       console.log("GET_USERS_SOCKET.IO");

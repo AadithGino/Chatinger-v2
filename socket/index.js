@@ -85,6 +85,12 @@ io.on("connection", (socket) => {
 
   socket.on("Block",async(data)=>{
     console.log("THIS IS BLOCKED CALLLED");
+    io.emit("block",data)
+  })
+
+  socket.on("ClearChat",async(data)=>{
+    console.log(data);
+    io.emit("clearchat",data)
   })
 });
 
