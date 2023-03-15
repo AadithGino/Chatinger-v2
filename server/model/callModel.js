@@ -5,6 +5,7 @@ const callSchema = mongoose.Schema({
   startTime: { type: Number, default: Date.now() },
   endTime: { type: Number },
   status: { type: String,default:"Missed"},
+  block:[],
   outGoing: { type: mongoose.Schema.Types.ObjectId },
   reciever: { type: mongoose.Schema.Types.ObjectId },
 },

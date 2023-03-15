@@ -14,8 +14,8 @@ import AdminHome from "./Components/AdminHome/AdminHome";
 
 function App() {
   const userdata = useSelector((state) => state.loginReducer.userdata);
-  const admindata = useSelector((state) => state.adminLoginReducer.adminData)
-  const roomId = useSelector((state) => state.videoCallReducer.roomId)
+  const admindata = useSelector((state) => state.adminLoginReducer.adminData);
+  const roomId = useSelector((state) => state.videoCallReducer.roomId);
   console.log(userdata);
   return (
     <div className="App">
@@ -52,8 +52,8 @@ function App() {
         />
 
         <Route
-          path='/video-call'
-          element={roomId ? <Videocall /> : <Navigate to='../home' />}
+          path="/video-call"
+          element={roomId ? <Videocall /> : <Navigate to="../home" />}
         />
 
         <Route
@@ -65,9 +65,6 @@ function App() {
           path="/admin"
           element={admindata ? <AdminHome /> : <Navigate to="../admin/login" />}
         />
-
-
-
       </Routes>
     </div>
   );

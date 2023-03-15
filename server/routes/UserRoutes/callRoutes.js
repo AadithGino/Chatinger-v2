@@ -14,4 +14,6 @@ router.route("/accept-call").get(callController.acceptCall);
 
 router.route("/decline-call").get(callController.declineCall);
 
+router.route("/clear-call-history").post(callController.clearCallHistory )
+
 module.exports = router;

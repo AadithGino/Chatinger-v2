@@ -48,25 +48,47 @@ exports.getCalls = async (req, res) => {
   } catch (error) {}
 };
 
-
-exports.acceptCall = async (req,res)=>{
+exports.acceptCall = async (req, res) => {
   try {
     const id = req.query.id;
-    callSchema.updateOne({_id:id},{$set:{status:"Accept"}}).then((data)=>{
-      res.status(200).json(data)
-    })
-  } catch (error) {
-    
-  }
-}
+    callSchema
+      .updateOne({ _id: id }, { $set: { status: "Accept" } })
+      .then((data) => {
+        res.status(200).json(data);
+      });
+  } catch (error) {}
+};
 
-exports.declineCall = async(req,res)=>{
+exports.declineCall = async (req, res) => {
   try {
     const id = req.query.id;
-    callSchema.updateOne({_id:id},{$set:{status:"Declined"}}).then((data)=>{
-      res.status(200).json(data)
-    })
-  } catch (error) {
-    
-  }
-}
+    callSchema
+      .updateOne({ _id: id }, { $set: { status: "Declined" } })
+      .then((data) => {
+        res.status(200).json(data);
+      });
+  } catch (error) {}
+};
+
+exports.clearCallHistory = async (req, res) => {
+  const { id } = req.body;
+  callSchema
+    .updateMany(
+      { $and: [{ members: { $in: id } }, { block: { $nin: id } }] },
+      { $push: { block: id } }
+    )
+    .then((data) => {
+      res.status(200).json(data);
+    });
+};
+
+exports.deleteSingleCallHistory = async (req, res) => {
+  const { id } = req.query;
+  try {
+    callSchema
+      .updateOne({ block: { $nin: { id } } }, { $push: { block: id } })
+      .then((data) => {
+        res.status(200).json(data);
+      });
+  } catch (error) {}
+};

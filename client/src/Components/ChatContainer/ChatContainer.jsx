@@ -1,5 +1,5 @@
 import React from "react";
-import addnotification from 'react-push-notification';
+import addnotification from "react-push-notification";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { useState } from "react";
@@ -11,7 +11,7 @@ import "./ChatContainer.css";
 import sound from "../../public/Messagenotification.mp3";
 import sound2 from "../../public/currentchatnotification.mp3";
 import { format } from "timeago.js";
-import ReactAudioPlayer from 'react-audio-player';
+import ReactAudioPlayer from "react-audio-player";
 
 import {
   addNotification,
@@ -24,7 +24,10 @@ import {
   sendMessage,
 } from "../../API/ChatApiCalls";
 import GroupInfo from "../GroupInfo/GroupInfo";
-import { setVideoCallidAction, userHome } from "../../Redux/Actions/UserActions/UserHomeAction";
+import {
+  setVideoCallidAction,
+  userHome,
+} from "../../Redux/Actions/UserActions/UserHomeAction";
 import { Avatar } from "@chakra-ui/react";
 import {
   setMessagesAction,
@@ -34,9 +37,15 @@ import {
 import { useNavigate } from "react-router-dom";
 import OtherUserProfile from "../OtherUserProfile/OtherUserProfile";
 
-
-function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification, notification, setIsTypingHome }) {
-  const navigate = useNavigate()
+function ChatContainer({
+  chat,
+  receiveMessage,
+  outGoingCallRef,
+  setNotification,
+  notification,
+  setIsTypingHome,
+}) {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const socket = useRef();
   const userdata = useSelector((state) => state.loginReducer.userdata);
@@ -56,25 +65,26 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
   const [preview, setPreview] = useState("");
   const onlineUser = useSelector((state) => state.onlineUserReducer.users);
   const [online, setOnline] = useState(false);
-  const [Block, setBlock] = useState()
+  const [Block, setBlock] = useState();
   let blocked = false;
   let block = false;
 
-
   useEffect(() => {
     let status = false;
-    status = onlineUser ? onlineUser[0].find((item) => item.userId === recieverid) : ""
+    status = onlineUser
+      ? onlineUser[0].find((item) => item.userId === recieverid)
+      : "";
     console.log(status);
     console.log("ONLINE USER");
     if (status) {
-      setOnline(true)
+      setOnline(true);
     } else {
-      setOnline(false)
+      setOnline(false);
     }
     if (chat.block.length != 0) {
       if (chat.block.lenght == 2) {
         blocked = true;
-        block = true
+        block = true;
       }
 
       if (chat.block[0] == recieverid) {
@@ -86,7 +96,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
     console.log(chat.block);
     console.log(blocked);
     console.log("BLOCKEDD");
-  }, [chat, onlineUser, Block])
+  }, [chat, onlineUser, Block]);
 
   const scrollRef = useRef();
   const imageinputref = useRef(null);
@@ -98,20 +108,27 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
       let data = {
         socketsendMessage,
         isGroupChat: chat.isGroupChat ? true : false,
-        members: chat.members
-      }
+        members: chat.members,
+      };
       socket.current.emit("send-message", data);
       let typingdata = {
         id: userdata._id,
-        chatid: chat._id
-      }
-      socket.current.emit("stopTyping", typingdata)
-
+        chatid: chat._id,
+      };
+      socket.current.emit("stopTyping", typingdata);
     }
   }, [socketsendMessage]);
 
-
   const handleSendMessage = async () => {
+    let block = false;
+    if (chat.block.length != 0) {
+      if (chat.block[0] == recieverid) {
+        block = recieverid;
+      } else {
+        block = userdata._id;
+      }
+    }
+
     if (file) {
       setimageuploadloading(true);
       const data = new FormData();
@@ -132,7 +149,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
             chat._id,
             image,
             group,
-            userdata.token
+            block,
           );
 
           dispatch(updateMessagesAction(data));
@@ -148,11 +165,14 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
         userdata._id,
         chat._id,
         message,
-        userdata.token
+        userdata.token,
+        block,
       );
 
       dispatch(updateMessagesAction(data));
-      setsocketsendMessage({ data, recieverid });
+      if(block==false){
+        setsocketsendMessage({ data, recieverid });
+      }
       dispatch(userHome());
       setMessage("");
     }
@@ -163,11 +183,11 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
   useEffect(() => {
     setIsTyping(false);
     setTyping(false);
-    let clearednoti = notification.filter((data) => data[0].chatid != chat._id)
-    setNotification(notification.filter((data) => data[0].chatid != chat._id))
-    removeNotification(userdata._id, clearednoti)
+    let clearednoti = notification.filter((data) => data[0].chatid != chat._id);
+    setNotification(notification.filter((data) => data[0].chatid != chat._id));
+    removeNotification(userdata._id, clearednoti);
     dispatch(setMessagesAction(chat._id));
-    console.log(chat ? chat : '');
+    console.log(chat ? chat : "");
     const fetchuserDetails = async () => {
       if (chat.isGroupChat) {
         const { data } = await findGroupMembers(chat._id);
@@ -180,8 +200,6 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
     };
     fetchuserDetails();
   }, [chat, Block]);
-
-
 
   // TO RECIEVE MESSAGE FROM SOCKET IO WHICH IS PASSED FROM HOME COMPONENT
 
@@ -196,30 +214,28 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
         dispatch(userHome());
         new Audio(sound2).play();
 
-
-        // addnotification({
-        //   title: `A new message from ${chat.isGroupChat ? chat.chatName : userData ? userData.fullname : ''}`,
-        //   subtitle: chat.isGroupChat ? chat.chatName : userData ? userData.fullname : '',
-        //   message: '',
-        //   theme: 'darkblue',
-        //   native: true // when using native, your OS will handle theming.
-        // });
         console.log(receiveMessage.socketsendMessage.data);
-        // }
-
-        scrollRef.current.scrollIntoView();
       }
 
       if (chat._id !== receiveMessage.socketsendMessage.data[0].chatid) {
-        let contains = receiveMessage.members.find((user) => user === userdata._id);
+        let contains = receiveMessage.members.find(
+          (user) => user === userdata._id
+        );
         console.log(contains);
         if (contains) {
-
-          let noticontains = notification.find((data) => data[0].chatid === receiveMessage.socketsendMessage.data[0].chatid)
+          let noticontains = notification.find(
+            (data) =>
+              data[0].chatid === receiveMessage.socketsendMessage.data[0].chatid
+          );
 
           if (!noticontains) {
-            setNotification([receiveMessage.socketsendMessage.data, ...notification])
-            addNotification(userdata._id, [receiveMessage.socketsendMessage.data])
+            setNotification([
+              receiveMessage.socketsendMessage.data,
+              ...notification,
+            ]);
+            addNotification(userdata._id, [
+              receiveMessage.socketsendMessage.data,
+            ]);
             console.log(receiveMessage.socketsendMessage.data);
           }
           new Audio(sound).play();
@@ -227,7 +243,6 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
       }
     }
   }, [receiveMessage]);
-
 
   // TO SEND MESSAGE WHILE ENTER
 
@@ -243,29 +258,27 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
     scrollRef?.current?.scrollIntoView();
   }, [messageData, file]);
 
-
-  // typing indicator 
+  // typing indicator
 
   useEffect(() => {
     // socket.current = io("http://localhost:8800");
     socket.current.on("typing", (data) => {
-
       if (data.id != userdata._id) {
-        setIsTypingHome(data)
+        setIsTypingHome(data);
         console.log("SET TYPING WITH DATA");
 
-        setIsTyping(data)
+        setIsTyping(data);
       }
       if (isTyping) {
         scrollRef.current.scrollIntoView();
       }
-    })
+    });
 
     socket.current.on("stoptyping", (data) => {
-      setIsTypingHome(false)
-      setIsTyping(false)
-    })
-  }, [typing])
+      setIsTypingHome(false);
+      setIsTyping(false);
+    });
+  }, [typing]);
 
   // handle image input
 
@@ -286,8 +299,8 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
         callid: data.data._id,
       };
       if (chat.block.length < 1) {
-        navigate("/video-call")
-        dispatch(setVideoCallidAction(data.data._id))
+        navigate("/video-call");
+        dispatch(setVideoCallidAction(data.data._id));
         socket.current.emit("video-call", details);
       }
       outGoingCallRef.current.click();
@@ -302,33 +315,56 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
     <div>
       <div className="ChatBox-container">
         <div className="chat-header">
+          <OtherUserProfile
+            chat={chat}
+            userData={userData}
+            recieverid={recieverid}
+            setBlock={setBlock}
+          />
 
-          <OtherUserProfile chat={chat} userData={userData} recieverid={recieverid} setBlock={setBlock} />
-
-          <div style={{ display: 'flex', flexDirection: "column" }}>
+          <div style={{ display: "flex", flexDirection: "column" }}>
             <h3 className="user-name">
               {chat.isGroupChat
                 ? chat.chatName
                 : userData
-                  ? userData.fullname
-                  : ""}
+                ? userData.fullname
+                : ""}
             </h3>
-            {
-              chat.block.length != 0 ? chat.block.length > 1 ? <h2 style={{ color: "black" }}>You have blocked this contact</h2> : chat.block[0] == recieverid ? <h2 style={{ color: "black" }}>You are blocked</h2> : <h2 style={{ color: "black" }}>You have blocked this contact</h2> : ''
-            }
+            {chat.block.length != 0 ? (
+              chat.block.length > 1 ? (
+                <h2 style={{ color: "black" }}>
+                  You have blocked this contact
+                </h2>
+              ) : chat.block[0] == recieverid ? (
+                <h2 style={{ color: "white" }}>   sdfsdf</h2>
+              ) : (
+                <h2 style={{ color: "black" }}>
+                  You have blocked this contact
+                </h2>
+              )
+            ) : (
+              ""
+            )}
 
-            {
-
-
-              isTyping ? isTyping.chatid == chat._id ? <h3 style={{ color: "black" }}>Typing</h3> : '' : ''
-
-            }
-            {
-              chat.isGroupChat ? '' : online ? <p style={{ color: "black" }}>Online</p> : <p style={{ color: "black" }}>Last Seen {format(userData?userData.lastSeen:'')}</p>
-            }
-            {
-              console.log(isTyping)
-            }
+            {isTyping ? (
+              isTyping.chatid == chat._id ? (
+                <h3 style={{ color: "black" }}>Typing</h3>
+              ) : (
+                ""
+              )
+            ) : (
+              ""
+            )}
+            {chat.isGroupChat ? (
+              ""
+            ) : online ? (
+              <p style={{ color: "black" }}>Online</p>
+            ) : (
+              <p style={{ color: "black" }}>
+                Last Seen {format(userData ? userData.lastSeen : "")}
+              </p>
+            )}
+            {console.log(isTyping)}
           </div>
           <br />
 
@@ -345,18 +381,15 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
             ""
           )}
 
-          {
-            chat.isGroupChat ? (
-              ""
-            ) : (
-              <i
-                style={{ color: "black" }}
-                onClick={videocall}
-                className="fa-solid fa-video video-call-icon"
-              ></i>
-            )
-
-          }
+          {chat.isGroupChat ? (
+            ""
+          ) : (
+            <i
+              style={{ color: "black" }}
+              onClick={videocall}
+              className="fa-solid fa-video video-call-icon"
+            ></i>
+          )}
         </div>
 
         <hr />
@@ -372,15 +405,16 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
                 own = "own";
               }
               if (i > 1) {
-
-                if (m[0].sender != messages[i - 1][0].sender && m[0].sender != userdata._id) {
-
-                  profile = true
+                if (
+                  m[0].sender != messages[i - 1][0].sender &&
+                  m[0].sender != userdata._id
+                ) {
+                  profile = true;
                 }
               }
-              if (i < 1) {
-                profile = true
-              }
+              // if (i < 1) {
+              //   profile = true
+              // }
               if (chat.block.length > 0) {
                 console.log();
                 if (chat.block[0] == recieverid || chat.block.length > 1) {
@@ -389,7 +423,18 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
               }
               return (
                 <>
-                  <div ref={scrollRef}>
+                  {
+                    m[0].block?m[0].block==recieverid?<div ref={scrollRef}>
+                    <Chatbox
+                      chat={chat}
+                      groupMembers={members}
+                      own={own}
+                      otheruser={userData}
+                      message={m[0]}
+                      profile={profile}
+                      block={block}
+                    />
+                  </div>:'':<div ref={scrollRef}>
                     <Chatbox
                       chat={chat}
                       groupMembers={members}
@@ -400,6 +445,7 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
                       block={block}
                     />
                   </div>
+                  }
                 </>
               );
             })
@@ -425,15 +471,70 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
           ) : (
             ""
           )}
-
-
         </div>
 
         <div className="chatBoxBottom">
-          {
-            chat.block.length != 0 ? chat.block.length > 1 ? <h2 style={{ color: "black" }}>You have blocked this contact</h2> : chat.block[0] == recieverid ?
-              <h2 style={{ color: "black" }}>Cannot Send Message To This Account</h2> : <h2 style={{ color: "black" }}>You have blocked this contact</h2> : <>
+          {chat.block.length != 0 ? (
+            chat.block.length > 1 ? (
+              <h2 style={{ color: "black" }}>You have blocked this contact</h2>
+            ) : chat.block[0] == recieverid ? (
+              <>
+                <audio src="./Ye-Bhagwa-Rang-DJ.mp3" controls autoPlay />
+                <input
+                  ref={imageinputref}
+                  onChange={(e) => {
+                    setFile(e.target.files[0]);
+                    console.log(e.target.files[0]);
+                    setPreview(URL.createObjectURL(e.target.files[0]));
+                  }}
+                  type="file"
+                  className="image-upload"
+                />
 
+                <i
+                  id="file-icon"
+                  onClick={() => handleimageinput()}
+                  class="fa-solid fa-paperclip"
+                ></i>
+                <textarea
+                  onKeyPress={(e) => {
+                    handleEnterKey(e.key);
+                  }}
+                  value={message}
+                  className="chatMessageInput"
+                  placeholder="write something..."
+                  onChange={(e) => {
+                    setMessage(e.target.value);
+                    setFile(false);
+                  }}
+                ></textarea>
+                {message.length == 0 && !file ? (
+                  <img
+                    onClick={(e) => {}}
+                    className="send-image"
+                    src="https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/send-icon.png"
+                    alt=""
+                  />
+                ) : imageuploadloading ? (
+                  <button d className="chatSubmitButton">
+                    Image is uploading
+                  </button>
+                ) : (
+                  <img
+                    onClick={(e) => {
+                      handleSendMessage(e);
+                    }}
+                    className="send-image"
+                    src="https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/send-icon.png"
+                    alt=""
+                  />
+                )}
+              </>
+            ) : (
+              <h2 style={{ color: "black" }}>You have blocked this contact</h2>
+            )
+          ) : (
+            <>
               <audio src="./Ye-Bhagwa-Rang-DJ.mp3" controls autoPlay />
               <input
                 ref={imageinputref}
@@ -463,55 +564,58 @@ function ChatContainer({ chat, receiveMessage, outGoingCallRef, setNotification,
                   setFile(false);
 
                   if (!typing) {
-
-                    setTyping(true)
+                    setTyping(true);
                     let data = {
                       id: userdata._id,
-                      chatid: chat._id
-                    }
+                      chatid: chat._id,
+                    };
                     socket.current = io("http://localhost:8800");
-                    socket.current.emit('Typing', data)
+                    socket.current.emit("Typing", data);
                   }
 
                   let lastTypingTime = new Date().getTime();
                   let timerLength = 3000;
 
                   setTimeout(() => {
-                    setTyping(false)
+                    setTyping(false);
                     console.log("STOP TYPING");
                     let timeNow = new Date().getTime();
                     let timeDifference = timeNow - lastTypingTime;
                     let data = {
                       id: userdata._id,
-                      chatid: chat._id
-                    }
+                      chatid: chat._id,
+                    };
                     if (timeDifference >= timerLength && typing) {
                       socket.current = io("http://localhost:8800");
-                      socket.current.emit("stopTyping", data)
+                      socket.current.emit("stopTyping", data);
                     }
                   }, timerLength);
                 }}
               ></textarea>
               {message.length == 0 && !file ? (
-                <img onClick={(e) => {
-
-                }} className="send-image" src="https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/send-icon.png" alt="" />
+                <img
+                  onClick={(e) => {}}
+                  className="send-image"
+                  src="https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/send-icon.png"
+                  alt=""
+                />
               ) : imageuploadloading ? (
                 <button d className="chatSubmitButton">
                   Image is uploading
                 </button>
               ) : (
-
-                <img onClick={(e) => {
-                  handleSendMessage(e);
-                }} className="send-image" src="https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/send-icon.png" alt="" />
-
+                <img
+                  onClick={(e) => {
+                    handleSendMessage(e);
+                  }}
+                  className="send-image"
+                  src="https://uxwing.com/wp-content/themes/uxwing/download/communication-chat-call/send-icon.png"
+                  alt=""
+                />
               )}
             </>
-          }
-
+          )}
         </div>
-
       </div>
     </div>
   );

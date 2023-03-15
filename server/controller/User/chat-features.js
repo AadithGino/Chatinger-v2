@@ -51,6 +51,7 @@ exports.sendMessage = async (req, res) => {
         content: req.body.image,
         sender: req.body.id,
         time: Date.now(),
+        block:req.body.block,
         token: req.body.token
       };
     } else {
@@ -60,6 +61,7 @@ exports.sendMessage = async (req, res) => {
         content: message,
         sender: req.body.id,
         time: Date.now(),
+        block:req.body.block,
         token: req.body.token
       };
     }
