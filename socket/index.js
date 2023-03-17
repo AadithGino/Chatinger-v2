@@ -1,9 +1,8 @@
 const { default: axios } = require("axios");
-const { socketURL } = require("./values");
 
 const io = require("socket.io")(8800, {
   cors: {
-    origin: socketURL,
+    origin: "http://localhost:3000",
   },
 });
 
@@ -18,18 +17,21 @@ io.on("connection", (socket) => {
       });
     }
 
+
     io.emit("get-users", onlineUsers);
     console.log(onlineUsers);
   });
 
+
+
   socket.on("disconnect", () => {
     console.log("DISCONNECGTT");
-    let user = onlineUsers.find((u) => u.socketId == socket.id);
-
-    if (user?.userId != undefined) {
-      axios.get("http://localhost:5000/last-seen?id=" + user.userId);
+    let user = onlineUsers.find((u)=>u.socketId==socket.id)
+    
+    if(user?.userId!=undefined){
+      axios.get("http://localhost:5000/last-seen?id="+user.userId)
     }
-    onlineUsers = onlineUsers.filter((users) => users.socketId !== socket.id);
+    onlineUsers = onlineUsers.filter((users) => users.socketId !== socket.id);;
     io.emit("get-users", onlineUsers);
   });
 
@@ -37,9 +39,7 @@ io.on("connection", (socket) => {
 
   socket.on("send-message", async (data) => {
     console.log(data);
-    const user = onlineUsers.find(
-      (user) => user.userId == data.socketsendMessage.recieverid
-    );
+    const user = onlineUsers.find((user) => user.userId == data.socketsendMessage.recieverid);
     console.log(user);
     if (user) {
       console.log(user.socketId + "THIS IS THE USER RETURNING");
@@ -51,11 +51,15 @@ io.on("connection", (socket) => {
     }
   });
 
+
   // send group message
+
+
 
   socket.on("video-call", async (data) => {
     console.log(data);
     io.emit("recieve-call", data);
+
   });
 
   socket.on("endCall-by-outgoing", async (data) => {
@@ -63,29 +67,32 @@ io.on("connection", (socket) => {
   });
 
   socket.on("Decline-call", async (data) => {
-    io.emit("decline-call-outgoing", data);
-  });
+    io.emit("decline-call-outgoing", data)
+  })
 
   // typing indicator
 
   socket.on("Typing", async (data) => {
     console.log("TYPING");
-    io.emit("typing", data);
+    io.emit("typing", data)
     console.log(data);
-  });
+  })
 
   socket.on("stopTyping", async (data) => {
-    io.emit("stoptyping", data);
+    io.emit("stoptyping", data)
     console.log("Stop typing");
-  });
+  })
 
-  socket.on("Block", async (data) => {
+  socket.on("Block",async(data)=>{
     console.log("THIS IS BLOCKED CALLLED");
-    io.emit("block", data);
-  });
+    io.emit("block",data)
+  })
 
-  socket.on("ClearChat", async (data) => {
+  socket.on("ClearChat",async(data)=>{
     console.log(data);
-    io.emit("clearchat", data);
-  });
+    io.emit("clearchat",data)
+  })
 });
+
+
+

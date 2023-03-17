@@ -14,7 +14,7 @@ const protect = asynchandler(async (req, res, next) => {
     try {
       token = req.headers.authorization.split(" ")[1];
       console.log(token + "This is the token...");
-      const decoded = jwt.verify(token, process.env.jwtcode);
+      const decoded = jwt.verify(token, 'CHATINGER1234');
       next();
     } catch (error) {
       res.status(401).json("TOKEN INVALID");

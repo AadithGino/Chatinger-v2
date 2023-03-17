@@ -1,6 +1,7 @@
 import axios from "axios";
+import { serverURL } from "../values";
 
-const API = axios.create({baseURL:'http://localhost:5000'})
+const API = axios.create({baseURL:serverURL})
 const config = {
   
     headers: {

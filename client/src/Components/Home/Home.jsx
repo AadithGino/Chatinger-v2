@@ -32,6 +32,7 @@ function Home() {
   const [loadsearch, setloadsearch] = useState(false);
   const [notification, setNotification] = useState([]);
   const [isTyping, setIsTypingHome] = useState(false);
+  const [otherOnline,setOtherOnline]=useState(false);
 
   const dispatch = useDispatch();
 
@@ -48,7 +49,7 @@ function Home() {
         console.log(data.data.notification)
         let noti = data.data.notification;
         setNotification(noti)
-        console.log(notification);
+       
       }
     })
   }, [userdata]);
@@ -82,6 +83,8 @@ function Home() {
 
     socket.current.on("get-users", (users) => {
       console.log("GET_USERS_SOCKET.IO");
+      setOtherOnline(users.find((m)=>m.userId==userdata._id))
+      console.log(otherOnline);
       dispatch(setOnlineUsers(users));
     });
   }, []);
