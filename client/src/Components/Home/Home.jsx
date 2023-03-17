@@ -16,6 +16,7 @@ import { setOnlineUsers } from "../../Redux/Actions/UserActions/UserChatActions"
 import CallAlert from "../CallAlert/CallAlert";
 import OutGoingCallAlert from "../OutGoingAlert/OutGoingCallAlert";
 import { findUserDetails } from "../../API/ChatApiCalls";
+import { socketURL } from "../../values";
 
 function Home() {
   const callRef = useRef()
@@ -35,7 +36,7 @@ function Home() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    socket.current = io("http://localhost:8800");
+    socket.current = io(socketURL);
     socket.current.emit("add-new-user", userdata._id);
     socket.current.on("get-users", (users) => {
       dispatch(setOnlineUsers(users));

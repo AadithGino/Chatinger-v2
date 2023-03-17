@@ -14,6 +14,7 @@ import {
 import "./OutGoingCallAlert.css";
 import { useSelector } from "react-redux";
 import { io } from "socket.io-client";
+import { socketURL } from "../../values";
 
 function OutGoingCallAlert({ outGoingCallRef, callData }) {
   const userdata = useSelector((state) => state.loginReducer.userdata);
@@ -28,13 +29,13 @@ function OutGoingCallAlert({ outGoingCallRef, callData }) {
     setDecline(false);
   },[]);
   const endCall = () => {
-    socket.current = io("http://localhost:8800");
+    socket.current = io(socketURL);
     const id = userData ? userData._id : "";
     socket.current.emit("endCall-by-outgoing", id);
   };
 
   useEffect(() => {
-    socket.current = io("http://localhost:8800");
+    socket.current = io(socketURL);
     socket.current.on("decline-call-outgoing", (data) => {
       if (data === userdata._id) {
         console.log("END RUNNING CALL");

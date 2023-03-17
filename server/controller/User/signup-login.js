@@ -24,19 +24,9 @@ exports.Signup = async (req, res) => {
           password,
         };
         // here we use twilio to sent otp
-        client.verify
-          .services(twilio.serviceID)
-          .verifications.create({
-            to: `+91${details.number}`,
-            channel: "sms",
-          })
-          .then((data) => {
-            res.status(200).json(data);
-            console.log(data);
-          })
-          .catch((error) => {
-            res.status(400).json(error);
-          });
+        USERSCHEMA.create(details).then((data) => {
+          res.status(201).json(data);
+        });
       }
     });
   } catch (error) {
@@ -73,30 +63,30 @@ exports.Login = async (req, res) => {
   try {
     USERSCHEMA.findOne({ number: req.body.number }).then((result) => {
       if (result) {
-       if(result.status){
-        bcrypt.compare(
-          req.body.password,
-          result.password,
-          function (err, data) {
-            if (data) {
-              let details = {
-                _id: result._id,
-                fullname: result.fullname,
-                firstname: result.Firstname,
-                lastname: result.lastname,
-                number: result.number,
-                photo: result.photo,
-                token: generateToken(result._id),
-              };
-              res.status(200).json(details);
-            } else {
-              res.status(401).json("INCORRECT PASSWORD");
+        if (result.status) {
+          bcrypt.compare(
+            req.body.password,
+            result.password,
+            function (err, data) {
+              if (data) {
+                let details = {
+                  _id: result._id,
+                  fullname: result.fullname,
+                  firstname: result.Firstname,
+                  lastname: result.lastname,
+                  number: result.number,
+                  photo: result.photo,
+                  token: generateToken(result._id),
+                };
+                res.status(200).json(details);
+              } else {
+                res.status(401).json("INCORRECT PASSWORD");
+              }
             }
-          }
-        );
-       }else{
-        res.status(400).json("Account Is Temporarly Suspended")
-       }
+          );
+        } else {
+          res.status(400).json("Account Is Temporarly Suspended");
+        }
       } else {
         res.status(401).json("USER NOT REGISTERED");
       }

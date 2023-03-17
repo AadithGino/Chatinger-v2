@@ -32,9 +32,11 @@ function Signup() {
   };
   useEffect(()=>{
     if(signupdata){
-      navigate("/verify-otp")
+      navigate("/login")
     }
   },[signupdata])
+
+  console.log(error);
   return (
     <div className="signup-main-div">
       <div className="side-logo-img">
@@ -63,7 +65,8 @@ function Signup() {
             type="text"
             name=""
             id=""
-          />
+          /> 
+          <br />
           <input
             ref={Lastname}
             onChange={(e) => {
@@ -75,6 +78,7 @@ function Signup() {
             name=""
             id=""
           />
+          <br />
           <input
             ref={Number}
             onChange={(e) => {
@@ -86,6 +90,7 @@ function Signup() {
             name=""
             id=""
           />
+          <br />
           <input
             ref={Password}
             onChange={(e) => {
@@ -97,6 +102,7 @@ function Signup() {
             name=""
             id=""
           />
+          <br />
           <input
             ref={cPassword}
             onChange={(e) => {
@@ -112,7 +118,7 @@ function Signup() {
             <button onClick={() => handleSignup()} className="SignUp-Button">
               Signup
             </button>{" "}
-            <button className="Login-Button">Login</button>
+            <button onClick={()=>{navigate('/login')}} className="Login-Button">Login</button>
           </div>
         </div>
       </div>

@@ -17,6 +17,7 @@ import { acceptCall, declinecall } from "../../API/ChatApiCalls";
 import { useNavigate } from "react-router-dom";
 import { setVideoCallidAction } from "../../Redux/Actions/UserActions/UserHomeAction";
 import { useDispatch } from "react-redux";
+import { socketURL } from "../../values";
 
 
 function CallAlert({ callRef, callData, endCallRef }) {
@@ -26,7 +27,7 @@ function CallAlert({ callRef, callData, endCallRef }) {
   const navigate = useNavigate()
 
   const declineCall = () => {
-    socket.current = io("http://localhost:8800");
+    socket.current = io(socketURL);
     const id = callData ? callData.userdata._id : "";
     socket.current.emit("Decline-call", id);
     declinecall(callData.callid).then((data)=>{

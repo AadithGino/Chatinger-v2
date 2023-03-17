@@ -10,16 +10,17 @@ const userHomeRoutes = require("./routes/UserRoutes/home-feature-routes");
 const usersLogin_SignupRouter = require("./routes/UserRoutes/signup-login");
 const userChatRoutes = require("./routes/UserRoutes/chat-Routes");
 const userStatusRoutes = require("./routes/UserRoutes/status-Routes");
-const userCallRoutes = require("./routes/UserRoutes/callRoutes")
-const adminRoutes = require("./routes/Admin/adminLoginRoutes")
+const userCallRoutes = require("./routes/UserRoutes/callRoutes");
+const adminRoutes = require("./routes/Admin/adminLoginRoutes");
 dotenv.config();
 
 const app = express();
 
 const cors = require("cors");
 const { resolve } = require("path");
+const { frontendUrl, socketURL } = require("./values");
 const corsOptions = {
-  origin: ["http://localhost:3000","http://localhost:8080"],
+  origin: [frontendUrl, socketURL],
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200,
 };
@@ -38,7 +39,7 @@ app.use("/", userHomeRoutes);
 app.use("/chat", userChatRoutes);
 app.use("/status", userStatusRoutes);
 app.use("/call", userCallRoutes);
-app.use("/admin", adminRoutes)
+app.use("/admin", adminRoutes);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -56,19 +57,16 @@ app.use(function (err, req, res, next) {
   // res.render('error');
 });
 
-let arr = [1, 1, 1, 1,];
+let arr = [1, 1, 1, 1];
 
-console.log(arr.reduce((acc, cu) => {
-  return acc + cu
-})
+console.log(
+  arr.reduce((acc, cu) => {
+    return acc + cu;
+  })
 );
-
-
 
 app.listen(5000, () => {
   console.log(5000);
 });
-
-
 
 module.exports = app;

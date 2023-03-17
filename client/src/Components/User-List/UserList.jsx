@@ -82,7 +82,7 @@ function UserList(props) {
                 <span className="notification-badge"></span>
               )}
             </div>
-            {props.details.latestMessage.sender == userdata._id ? (
+            {props.details.latestMessage?props.details.latestMessage.sender == userdata._id ? (
               <p style={{ marginRight: "5rem" }}>
                 You :{" "}
                 {props.details.latestMessage.isFile
@@ -95,7 +95,7 @@ function UserList(props) {
                   ? "Image"
                   : props.details.latestMessage.content.slice(0, 10)}
               </p>
-            )}
+            ):''}
             <p style={{ color: "green" }}>
               {props.isTyping
                 ? props.isTyping.chatid == props.details._id

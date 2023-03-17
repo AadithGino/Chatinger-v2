@@ -17,6 +17,7 @@ import axios from 'axios';
 import { chatblockUser, clearUserChat } from '../../API/ChatApiCalls';
 import { setCurrentChat, userHome } from '../../Redux/Actions/UserActions/UserHomeAction';
 import Alert from '../Alert/Alert'
+import { socketURL } from '../../values';
 
 function OtherUserProfile({ chat, userData, recieverid, setBlock }) {
     const dispatch = useDispatch()
@@ -29,7 +30,7 @@ function OtherUserProfile({ chat, userData, recieverid, setBlock }) {
         chatblockUser(userdata._id, chat._id).then((data) => {
             dispatch(userHome());
             dispatch(setCurrentChat(data.data))
-            socket.current = io("http://localhost:8800");
+            socket.current = io(socketURL);
             let details = {
                 userid:recieverid,
                 chat:data.data
@@ -43,7 +44,7 @@ function OtherUserProfile({ chat, userData, recieverid, setBlock }) {
     const clearChat = () =>{
        clearUserChat(chat._id).then((data)=>{
         dispatch(setCurrentChat(data.data))
-        socket.current = io("http://localhost:8800");
+        socket.current = io(socketURL);
         let details = {
             userid:recieverid,
             chat:data.data

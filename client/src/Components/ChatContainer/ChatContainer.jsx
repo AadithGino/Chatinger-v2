@@ -36,6 +36,7 @@ import {
 } from "../../Redux/Actions/UserActions/UserChatActions";
 import { useNavigate } from "react-router-dom";
 import OtherUserProfile from "../OtherUserProfile/OtherUserProfile";
+import { socketURL } from "../../values";
 
 function ChatContainer({
   chat,
@@ -103,7 +104,7 @@ function ChatContainer({
   // FOR SENDING MESSAGE TO SOCKET.IO
 
   useEffect(() => {
-    socket.current = io("http://localhost:8800");
+    socket.current = io(socketURL);
     if (socketsendMessage) {
       let data = {
         socketsendMessage,
@@ -261,7 +262,6 @@ function ChatContainer({
   // typing indicator
 
   useEffect(() => {
-    // socket.current = io("http://localhost:8800");
     socket.current.on("typing", (data) => {
       if (data.id != userdata._id) {
         setIsTypingHome(data);
@@ -292,7 +292,7 @@ function ChatContainer({
 
   const videocall = () => {
     createCall(userdata._id, userData._id).then((data) => {
-      socket.current = io("http://localhost:8800");
+      socket.current = io(socketURL);
       let details = {
         recieverid,
         userdata,
@@ -569,7 +569,7 @@ function ChatContainer({
                       id: userdata._id,
                       chatid: chat._id,
                     };
-                    socket.current = io("http://localhost:8800");
+                    socket.current = io(socketURL);
                     socket.current.emit("Typing", data);
                   }
 
@@ -586,7 +586,7 @@ function ChatContainer({
                       chatid: chat._id,
                     };
                     if (timeDifference >= timerLength && typing) {
-                      socket.current = io("http://localhost:8800");
+                      socket.current = io(socketURL);
                       socket.current.emit("stopTyping", data);
                     }
                   }, timerLength);

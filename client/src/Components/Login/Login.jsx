@@ -39,7 +39,7 @@ function Signup() {
       </div>
       <div className="signup-form-div">
         <div>
-          <h2>Login Form </h2>
+          <h1 style={{marginBottom:"40px"}}>Login  </h1>
           {
             loading ? <Loading/> : ''
           }
@@ -54,18 +54,19 @@ function Signup() {
               setNumber(e.target.value);
             }}
             placeholder="Number"
-            className="signup-input-tag"
+            className="login-input-tag"
             type="number"
             name=""
             id=""
-          />
+          /> 
+          <br />
           <input
             ref={Password}
             onChange={(e) => {
               setPassword(e.target.value);
             }}
             placeholder="Password"
-            className="signup-input-tag"
+            className="login-input-tag"
             type="password"
             name=""
             id=""

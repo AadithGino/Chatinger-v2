@@ -11,8 +11,8 @@ body{
     margin-top: 20px;
     width: 50%;
 }
-.signup-input-tag{
-    width: 50%;
+.login-input-tag{
+    width: 190%;
     height: 30px;
     margin-bottom: 2rem;
     border-radius: 20px;
@@ -56,12 +56,6 @@ body{
     cursor: pointer;
 }
 
-/* .signup-form-div{
-    background-color: white;
-    border-radius: 30px;
-    width: 50%;
-    margin-right: 20px;
-} */
 
 @media only screen and (max-width: 768px) {
     
